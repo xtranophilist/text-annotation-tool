@@ -60,8 +60,8 @@ export default {
           width: this.newWidth,
           height: this.newHeight
         });
-        img = this.lock_object(img)
-        canvas.add(img).renderAll();
+        // img = this.lock_object(img)
+        canvas.setBackgroundImage(img).renderAll();
       });
     }
   },
