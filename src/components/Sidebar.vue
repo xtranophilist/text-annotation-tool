@@ -20,9 +20,7 @@ export default {
   components: {
       Dropzone, ImageRow
   },
-  computed: mapState([
-  'images'
-])
+  computed: mapState(['images'])
 }
 </script>
 

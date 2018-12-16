@@ -1,5 +1,6 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
+// import { getBase64 } from './utils'
 
 Vue.use(Vuex);
 
@@ -25,9 +26,10 @@ const store = new Vuex.Store({
         if (!state.images.find(image => image.id == id) && file.type.substr(0, 6) == 'image/') {
           let dct = {
             'name': file.name,
-            'id': id,
-            'size': file.size,
             'objects': [],
+            'size': file.size,
+            'id': id,
+            'file': file
           }
           images.push(dct)
         }

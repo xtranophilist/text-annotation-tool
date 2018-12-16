@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Editor</h2>
-    
+    {{selected}}
   </div>
 </template>
 
@@ -10,8 +10,8 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Editor',
-  props: {
-    // msg: String
+  computed: {
+    ...mapState(['selected']),
   }
 }
 </script>

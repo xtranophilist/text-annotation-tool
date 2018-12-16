@@ -14,21 +14,17 @@
 </template>
 
 <script>
-
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
 
 export default {
-  name: "Dropzone",
+  name: 'Dropzone',
   methods: {
     filesChanged: function(e) {
       let files = e.target.files;
-      this.$store.commit("addFiles", files);
+      this.$store.commit('addFiles', files);
     }
   },
-  computed: mapState([
-  // map this.count to store.state.count
-  'images'
-])
+  computed: mapState(['images'])
 };
 </script>
 
