@@ -22,7 +22,6 @@ export default {
   methods: {
     filesChanged: function(e) {
       let files = e.target.files;
-      console.log(files);
       this.$store.commit("addFiles", files);
     }
   },

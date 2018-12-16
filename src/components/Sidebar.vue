@@ -3,7 +3,7 @@
     <h1>OCR GT</h1>
     <Dropzone/>
     <div v-for="image in images" :key="image.fullName">
-      {{image.name}}
+      <ImageRow :img="image"/>
     </div>
   </div>
 </template>
@@ -11,13 +11,14 @@
 <script>
 
 import Dropzone from './Dropzone.vue'
+import ImageRow from './ImageRow.vue'
 import { mapState } from 'vuex'
 
 
 export default {
   name: 'Sidebar',
   components: {
-      Dropzone
+      Dropzone, ImageRow
   },
   computed: mapState([
   // map this.count to store.state.count
