@@ -41,16 +41,17 @@ export default {
   outline: 2px dashed #92b0b3;
   outline-offset: -5px;
   position: relative;
-  text-align: center;
 }
 label {
-  text-align: center;
   position: absolute;
   top: 30%;
   left: 5%;
+  text-align: center;
 }
 .file-input {
   position: absolute;
+  top: 0;
+  left: 0;
   z-index: 9;
   height: 100%;
   width: 100%;

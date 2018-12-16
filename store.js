@@ -11,8 +11,8 @@ const store = new Vuex.Store({
       imagePaths: state => {
         return state.images
       },
-      hasImage: (state) => (file) => {
-        return state.images.find(image => image.fullName == file.lastModified + '__' + file.name)
+      hasImage: (state) => (fullName) => {
+        return state.images.find(image => image.fullName == fullName)
       }
     },
     mutations: {
@@ -20,10 +20,11 @@ const store = new Vuex.Store({
         let images = []
         Array.from(Array(files.length).keys()).map(x => {
           let file = files[x]
-          if (file.type.substr(0, 6) == 'image/') {
+          let fullName = file.lastModified + '__' + file.name
+          if (!state.images.find(image => image.fullName == fullName) && file.type.substr(0, 6) == 'image/') {
             let dct = {
               'name': file.name,
-              'fullName': file.lastModified + '__' + file.name,
+              'fullName': fullName,
               'size': file.size,
               'objects': [],
             }
