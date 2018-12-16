@@ -42,24 +42,24 @@ export default {
       if (ratio > 10) {
         ratio = 10;
       }
-      let newWidth = hiddenImg.width * ratio,
-        newHeight = hiddenImg.height * ratio;
-      canvas.setWidth(newWidth);
-      canvas.setHeight(newHeight);
-      hiddenImg.width=newWidth;
-      hiddenImg.width=newHeight;
+      (this.newWidth = hiddenImg.width * ratio),
+        (this.newHeight = hiddenImg.height * ratio);
+      canvas.setWidth(this.newWidth);
+      canvas.setHeight(this.newHeight);
+      // hiddenImg.width=this.newWidth;
+      // hiddenImg.width=this.newHeight;
     },
     addImage(data) {
       let canvas = this.canvas;
       let hiddenImg = this.hiddenImg;
       this.setDimensions();
-      fabric.Image.fromURL(data, function(img) {
+      fabric.Image.fromURL(data, img => {
         img = img.set({
           left: 0,
           top: 0,
           angle: 0,
-          width: hiddenImg.width,
-          height: hiddenImg.height
+          width: this.newWidth,
+          height: this.newHeight
         });
         canvas.add(img).renderAll();
       });
