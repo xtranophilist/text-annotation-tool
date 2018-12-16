@@ -10,6 +10,8 @@
 import Sidebar from './components/Sidebar.vue'
 import Editor from './components/Editor.vue'
 
+
+
 export default {
   name: 'app',
   components: {

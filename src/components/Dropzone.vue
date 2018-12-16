@@ -2,12 +2,9 @@
 <template>
 
   <div class="dropzone">
-      <!-- https://css-tricks.com/drag-and-drop-file-uploading/ -->
-    <h2>Drop Zone</h2>
     <form class="box" method="post" action="" enctype="multipart/form-data">
-
-    <input class="file-input" type="file" multiple @change="filesChanged"/>    
-
+    Drop your files here
+    <input class="file-input" type="file" multiple @change="filesChanged" accept="image/*"/>    
 </form>
   </div>
 </template>
@@ -17,8 +14,9 @@ export default {
   name: "Dropzone",
   methods: {
     filesChanged: function(e) {
-      let files = e.target.files
-      console.log(files)
+      let files = e.target.files;
+      console.log(files);
+      this.$store.commit('addFiles', files);
     }
   }
 };
@@ -33,9 +31,9 @@ export default {
   outline-offset: -5px;
 }
 .file-input {
-    border: 1px solid red;
-    opacity: 0;
-    height: 100%;
-    width: 100%;
+  border: 1px solid red;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
 }
 </style>
