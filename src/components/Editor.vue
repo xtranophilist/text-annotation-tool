@@ -16,6 +16,13 @@ window.fabric = fabric;
 
 export default {
   name: "Editor",
+  data() {
+    return {
+      start: [],
+      hiddenImg: null,
+      canvas: null
+    };
+  },
   mounted() {
     this.canvas = new fabric.Canvas("canvas");
     this.hiddenImg = document.getElementById("hidden");
@@ -41,15 +48,15 @@ export default {
       canvas.setWidth(this.newWidth);
       canvas.setHeight(this.newHeight);
     },
-    lock_object(obj){
-        obj.lockMovementX = true;
-        obj.lockMovementY = true;
-        obj.lockScalingX = true;
-        obj.lockScalingY = true;
-        obj.lockUniScaling = true;
-        obj.lockRotation = true;
-        obj.hasControls = false;
-        return obj
+    lock_object(obj) {
+      obj.lockMovementX = true;
+      obj.lockMovementY = true;
+      obj.lockScalingX = true;
+      obj.lockScalingY = true;
+      obj.lockUniScaling = true;
+      obj.lockRotation = true;
+      obj.hasControls = false;
+      return obj;
     },
     addImage(data) {
       let canvas = this.canvas;
@@ -62,6 +69,17 @@ export default {
         });
         // img = this.lock_object(img)
         canvas.setBackgroundImage(img).renderAll();
+        this.listenEvents();
+      });
+    },
+    listenEvents() {
+      let start;
+      this.canvas.on("mouse:down", options => {
+        start = [options.e.layerX, options.e.layerY];
+      });
+      this.canvas.on("mouse:up", options => {
+        let end = [options.e.layerX, options.e.layerY];
+        console.log(start)
       });
     }
   },
