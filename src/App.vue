@@ -1,23 +1,31 @@
 <template>
   <div id="app">
-    
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Sidebar/>
+    <Editor/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import Sidebar from './components/Sidebar.vue'
+import Editor from './components/Editor.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Sidebar, Editor
   }
 }
 </script>
 
 <style>
+body, html{
+  height: 100%;
+}
 #app {
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 400px auto;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
