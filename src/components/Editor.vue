@@ -16,12 +16,6 @@ window.fabric = fabric;
 
 export default {
   name: "Editor",
-  data() {
-    return {
-      // canvas: null,
-      // hiddenImg: null
-    };
-  },
   mounted() {
     this.canvas = new fabric.Canvas("canvas");
     this.hiddenImg = document.getElementById("hidden");
@@ -46,8 +40,16 @@ export default {
         (this.newHeight = hiddenImg.height * ratio);
       canvas.setWidth(this.newWidth);
       canvas.setHeight(this.newHeight);
-      // hiddenImg.width=this.newWidth;
-      // hiddenImg.width=this.newHeight;
+    },
+    lock_object(obj){
+        obj.lockMovementX = true;
+        obj.lockMovementY = true;
+        obj.lockScalingX = true;
+        obj.lockScalingY = true;
+        obj.lockUniScaling = true;
+        obj.lockRotation = true;
+        obj.hasControls = false;
+        return obj
     },
     addImage(data) {
       let canvas = this.canvas;
@@ -55,12 +57,10 @@ export default {
       this.setDimensions();
       fabric.Image.fromURL(data, img => {
         img = img.set({
-          left: 0,
-          top: 0,
-          angle: 0,
           width: this.newWidth,
           height: this.newHeight
         });
+        img = this.lock_object(img)
         canvas.add(img).renderAll();
       });
     }
