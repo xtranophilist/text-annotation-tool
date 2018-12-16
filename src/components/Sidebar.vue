@@ -2,7 +2,7 @@
   <div class="sidebar">
     <h1>OCR GT</h1>
     <Dropzone/>
-    <div v-for="image in images" :key="image.fullName">
+    <div v-for="image in images" :key="image.id">
       <ImageRow :img="image"/>
     </div>
   </div>
@@ -21,7 +21,6 @@ export default {
       Dropzone, ImageRow
   },
   computed: mapState([
-  // map this.count to store.state.count
   'images'
 ])
 }

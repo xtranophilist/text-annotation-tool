@@ -1,12 +1,13 @@
 <template>
   <div v-if="img" class="image-row">
-    <a href="#" @click.prevent="selectImage">{{img.name}}</a>
+    <a href="#" @click.prevent="selectImage" :class="{selected: isSelected}">
+      {{img.name}}
+      </a>
   </div>
 </template>
 
 <script>
-
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 export default {
   name: "ImageRow",
@@ -17,8 +18,14 @@ export default {
     //   ImageRow
   },
   methods: {
-    selectImage(){
-      this.$store.commit('selectImage', this.img)
+    selectImage() {
+      this.$store.commit("selectImage", this.img);
+    }
+  },
+  computed: {
+    ...mapState(["selected"]),
+    isSelected() {
+      return this.selected.id === this.img.id;
     }
   }
 };
@@ -26,7 +33,7 @@ export default {
 
 
 <style>
-.image-row a{
-display: block
+.image-row a {
+  display: block;
 }
 </style>
