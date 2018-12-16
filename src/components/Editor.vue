@@ -1,7 +1,5 @@
 <template>
   <div id="editor">
-    <h2>Editor</h2>
-    {{selected}}
     <canvas id="canvas">
     </canvas>
     <img id="hidden"/>
@@ -29,43 +27,56 @@ export default {
     this.hiddenImg = document.getElementById("hidden");
   },
   methods: {
-    renderImage(data) {
+    setDimensions() {
       let canvas = this.canvas;
-      width = this.hiddenImg.width;
-      height = this.hiddenImg.height;
-      
-
-      canvas.setWidth(width);
-      canvas.setHeight(height);
-      canvas.calcOffset();
+      let hiddenImg = this.hiddenImg;
+      let editor = document.getElementById("editor");
+      let widthRatio = editor.clientWidth / hiddenImg.width,
+        heightRatio = editor.clientHeight / hiddenImg.height;
+      let ratio;
+      if (widthRatio < heightRatio) {
+        ratio = widthRatio;
+      } else {
+        ratio = heightRatio;
+      }
+      if (ratio > 10) {
+        ratio = 10;
+      }
+      let newWidth = hiddenImg.width * ratio,
+        newHeight = hiddenImg.height * ratio;
+      canvas.setWidth(newWidth);
+      canvas.setHeight(newHeight);
+      hiddenImg.width=newWidth;
+      hiddenImg.width=newHeight;
     },
     addImage(data) {
       let canvas = this.canvas;
       let hiddenImg = this.hiddenImg;
-      hiddenImg.src = data;
+      this.setDimensions();
       fabric.Image.fromURL(data, function(img) {
-        var oImg = img.set({
+        img = img.set({
           left: 0,
           top: 0,
           angle: 0,
           width: hiddenImg.width,
           height: hiddenImg.height
         });
-        canvas.add(oImg).renderAll();
-        var a = canvas.setActiveObject(oImg);
-        var dataURL = canvas.toDataURL({ format: "png", quality: 1 });
+        canvas.add(img).renderAll();
       });
     }
   },
   watch: {
     selected() {
       let canvas = this.canvas;
+      canvas.clear();
       let file = this.selected.file;
-      
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.onload = f => {
         var data = f.target.result;
-        this.addImage(data);
+        this.hiddenImg.onload = () => {
+          this.addImage(data);
+        };
+        this.hiddenImg.src = data;
       };
       reader.readAsDataURL(file);
     }
@@ -87,5 +98,6 @@ export default {
   top: 0;
   left: 0;
   opacity: 0;
+  z-index: -1;
 }
 </style>

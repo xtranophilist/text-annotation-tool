@@ -9,27 +9,25 @@
 </template>
 
 <script>
-
-import Dropzone from './Dropzone.vue'
-import ImageRow from './ImageRow.vue'
-import { mapState } from 'vuex'
-
+import Dropzone from "./Dropzone.vue";
+import ImageRow from "./ImageRow.vue";
+import { mapState } from "vuex";
 
 export default {
-  name: 'Sidebar',
+  name: "Sidebar",
   components: {
-      Dropzone, ImageRow
+    Dropzone,
+    ImageRow
   },
-  computed: mapState(['images'])
-}
+  computed: mapState(["images"])
+};
 </script>
 
 
 <style>
-.sidebar{
-    border-right: 1px solid black;
-    height: 100%;
-    margin-right: 1em;
+.sidebar {
+  border-right: 1px solid black;
+  height: 100%;
+  margin-right: 1em;
 }
-
 </style>

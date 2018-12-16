@@ -7,10 +7,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 export default {
-  name: 'ImageRow',
+  name: "ImageRow",
   props: {
     img: Object
   },
@@ -19,11 +19,11 @@ export default {
   },
   methods: {
     selectImage() {
-      this.$store.commit('selectImage', this.img);
+      this.$store.commit("selectImage", this.img);
     }
   },
   computed: {
-    ...mapState(['selected']),
+    ...mapState(["selected"]),
     isSelected() {
       return this.selected.id === this.img.id;
     }
@@ -36,7 +36,7 @@ export default {
 .image-row a {
   display: block;
 }
-.selected{
+.selected {
   font-weight: bold;
 }
 </style>
