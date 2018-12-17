@@ -74,12 +74,34 @@ export default {
     },
     listenEvents() {
       let start;
+      let canvas = this.canvas;
       this.canvas.on("mouse:down", options => {
         start = [options.e.layerX, options.e.layerY];
       });
       this.canvas.on("mouse:up", options => {
-        let end = [options.e.layerX, options.e.layerY];
-        console.log(start)
+        if (!canvas.getActiveObject()) {
+          let end = [options.e.layerX, options.e.layerY];
+          let left, top;
+          if (start[0] < end[0]) {
+            left = start[0];
+          } else {
+            left = end[0];
+          }
+          if (start[1] < end[1]) {
+            top = start[1];
+          } else {
+            top = end[0];
+          }
+          var rect = new fabric.Rect({
+            left: left,
+            top: top,
+            width: end[0] - start[0],
+            height: end[1] - start[1],
+            fill: "rgba(255,127,39,0.35)"
+          });
+          canvas.add(rect);
+          canvas.renderAll();
+        }
       });
     }
   },
