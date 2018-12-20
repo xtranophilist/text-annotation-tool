@@ -53,7 +53,7 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
     this.callSuper("initialize", element, options);
     this.set("uid", guidGenerator());
     this.set("text", options.text || '');
-    this.set("dataURL", options.dataURL || '');
+    this.set("dataURL", element.dataURL || '');
   },
 
   toObject: function() {
@@ -225,8 +225,9 @@ export default {
           let height = Math.abs(end.y - start.y);
 
           if (width > 3 && height > 3) {
-            let dataURL;
-            dataURL = this.dataURL(left, top, width, height);
+            
+            let dataURL = this.dataURL(left, top, width, height);
+            console.log(dataURL);
 
             var rect = new fabric.Annotator({
               left: left,
