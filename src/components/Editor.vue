@@ -44,16 +44,46 @@ function guidGenerator() {
   );
 }
 
-// Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
-fabric.Object.prototype.toObject = (function(toObject) {
-  return function(properties) {
-    return fabric.util.object.extend(toObject.call(this, properties), {
-      text: this.text,
-      dataURL: this.dataURL,
-      uid: guidGenerator()
-    });
-  };
-})(fabric.Object.prototype.toObject);
+// // Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
+// fabric.Object.prototype.toObject = (function(toObject) {
+//   return function(properties) {
+//     return fabric.util.object.extend(toObject.call(this, properties), {
+//       text: this.text,
+//       dataURL: this.dataURL,
+//       uid: guidGenerator()
+//     });
+//   };
+// })(fabric.Object.prototype.toObject);
+
+fabric.Annotator = fabric.util.createClass(fabric.Rect, {
+
+  type: 'annotator',
+
+  initialize: function(element, options) {
+    this.callSuper('initialize', element, options);
+    this.set('uid', guidGenerator());
+    options && this.set('text', options.text);
+    options && this.set('dataURL', options.dataURL);
+  },
+
+  toObject: function() {
+    // debugger;
+    return fabric.util.object.extend(this.callSuper('toObject'), { text: this.text, dataURL: this.dataURL, uid: this.uid });
+  }
+});
+
+fabric.Annotator.fromObject = function(object, callback) {
+  fabric.util.loadImage(object.src, function(img) {
+    debugger;
+    callback && callback(new fabric.NamedImage(img, object));
+  });
+};
+
+// fabric.Annotator.fromObject = function(object, callback) {
+//   fabric.util.loadImage(object.src, function(img) {
+//     callback && callback(new fabric.NamedImage(img, object));
+//   });
+// };
 
 window.fabric = fabric;
 
@@ -98,11 +128,11 @@ export default {
         height: this.newHeight,
         left: 0,
         top: 0
-    });
-    tmpCanvas.setWidth(this.newWidth);
-    tmpCanvas.setHeight(this.newHeight);
-    tmpCanvas.add(newImage);
-    tmpCanvas.renderAll();
+      });
+      tmpCanvas.setWidth(this.newWidth);
+      tmpCanvas.setHeight(this.newHeight);
+      tmpCanvas.add(newImage);
+      tmpCanvas.renderAll();
       let url = tmpCanvas.toDataURL({
         format: "jpg",
         quality: 1,
@@ -115,7 +145,7 @@ export default {
       return url;
     },
     update() {
-      console.log("updating");
+      console.log(this.canvas.toJSON());
       this.selected.data = this.canvas.toJSON();
     },
     keyDown(e) {
@@ -198,29 +228,21 @@ export default {
           let height = Math.abs(end.y - start.y);
 
           if (width > 3 && height > 3) {
-            this.cnt++;
-            console.log(this.cnt);
-            let dataURL;
-            dataURL = this.dataURL(left, top, width, height);
-            // if (this.cnt > 2) {
-              
-            // }else{
-            //   dataURL = '';
-            // }
+            let dataURL = this.dataURL(left, top, width, height);
 
-            var rect = new fabric.Rect({
+            var rect = new fabric.Annotator({
               left: left,
               top: top,
               width: width,
               height: height,
               fill: "rgba(255,127,39,0.35)",
-              dataURL: dataURL
+              dataURL: dataURL,
+              text: 'abc',
             });
 
             rect.on("modified", this.update);
             canvas.add(rect);
             canvas.renderAll();
-            // this.addImage()
             this.update();
           }
         }
@@ -254,6 +276,9 @@ export default {
 <style>
 #canvas {
   border: 1px solid red;
+}
+#tmp-canvas {
+  visibility: hidden;
 }
 #hidden {
   position: absolute;
