@@ -29,7 +29,8 @@ const store = new Vuex.Store({
             'objects': [],
             'size': file.size,
             'id': id,
-            'file': file
+            'file': file,
+            'suggestions': 0,
           }
           images.push(dct)
         }

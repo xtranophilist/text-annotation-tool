@@ -1,7 +1,9 @@
 <template>
   <div id="editor">
+    <div id='canvas-wrapper'>
     <canvas id="canvas">
     </canvas>
+    </div>
     <img id="hidden"/>
   </div>
 </template>
@@ -25,9 +27,9 @@ export default {
   name: "Editor",
   data() {
     return {
-      start: [],
       hiddenImg: null,
-      canvas: null
+      canvas: null,
+      canvasEl: null
     };
   },
   mounted() {
@@ -36,9 +38,15 @@ export default {
       canvas.renderAll();
     };
     this.hiddenImg = document.getElementById("hidden");
+    this.wrapper = document.getElementById("canvas-wrapper");
+    this.wrapper.tabIndex = 1000;
+    this.wrapper.addEventListener("keydown", this.keyDown, false);
     this.canvas = canvas;
   },
   methods: {
+    keyDown(e) {
+      // debugger;
+    },
     setDimensions() {
       let canvas = this.canvas;
       let hiddenImg = this.hiddenImg;
