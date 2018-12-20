@@ -1,11 +1,10 @@
 <template>
   <div id="editor">
     <div id='canvas-wrapper'>
-      <canvas id="cant">
-      </canvas>
     <canvas id="canvas">
     </canvas>
     </div>
+    <canvas id="tmp-canvas"></canvas>
     <div v-if="selected" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
         <img :src="obj.dataURL"/>
@@ -92,21 +91,19 @@ export default {
   },
   methods: {
     dataURL(left, top, width, height) {
-      let can2 = new fabric.Canvas("cant");
+      let tmpCanvas = new fabric.Canvas("tmp-canvas");
       let img = this.hiddenImg;
       let newImage = new fabric.Image(img, {
         width: this.newWidth,
         height: this.newHeight,
-        // Set the center of the new object based on the event coordinates relative
-        // to the canvas container.
         left: 0,
         top: 0
     });
-    can2.setWidth(this.newWidth);
-    can2.setHeight(this.newHeight);
-    can2.add(newImage);
-    can2.renderAll();
-      let url = can2.toDataURL({
+    tmpCanvas.setWidth(this.newWidth);
+    tmpCanvas.setHeight(this.newHeight);
+    tmpCanvas.add(newImage);
+    tmpCanvas.renderAll();
+      let url = tmpCanvas.toDataURL({
         format: "jpg",
         quality: 1,
         left: left,
@@ -114,9 +111,7 @@ export default {
         width: width,
         height: height
       });
-      // console.log(url);
-      // let url = 'aa'
-      can2.dispose();
+      tmpCanvas.dispose();
       return url;
     },
     update() {
@@ -206,11 +201,12 @@ export default {
             this.cnt++;
             console.log(this.cnt);
             let dataURL;
-            if (this.cnt > 2) {
-              dataURL = this.dataURL(left, top, width, height);
-            }else{
-              dataURL = '';
-            }
+            dataURL = this.dataURL(left, top, width, height);
+            // if (this.cnt > 2) {
+              
+            // }else{
+            //   dataURL = '';
+            // }
 
             var rect = new fabric.Rect({
               left: left,
