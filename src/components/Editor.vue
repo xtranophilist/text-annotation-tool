@@ -82,7 +82,7 @@ fabric.Annotator.fromObject = function(object, callback) {
   // });
   var rect = new fabric.Annotator(object);
   callback && callback(rect); //?//
-      return rect;
+  return rect;
 };
 fabric.Annotator.async = true;
 
@@ -172,11 +172,12 @@ export default {
         ratio = widthRatio;
       } else {
         ratio = heightRatio;
+        ratio = ratio * 0.7;
       }
       if (ratio > 10) {
         ratio = 10;
       }
-      ratio = ratio * 0.7;
+
       (this.newWidth = hiddenImg.width * ratio),
         (this.newHeight = hiddenImg.height * ratio);
       canvas.setWidth(this.newWidth);
@@ -306,9 +307,8 @@ export default {
   visibility: hidden;
 }
 
-#clips div{
+#clips div {
   float: left;
-  padding: .5em;
-
+  padding: 0.5em;
 }
 </style>

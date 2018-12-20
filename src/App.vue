@@ -27,7 +27,7 @@ body, html{
 #app {
   min-height: 100%;
   display: grid;
-  grid-template-columns: 400px auto;
+  grid-template-columns: 350px auto;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
