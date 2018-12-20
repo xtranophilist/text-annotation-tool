@@ -13,6 +13,13 @@ import { mapState } from "vuex";
 
 import { fabric } from "fabric-browseronly";
 window.fabric = fabric;
+fabric.Group.prototype.hasControls = false;
+fabric.Group.prototype.lockScalingX = true;
+fabric.Group.prototype.lockScalingY = true;
+fabric.Group.prototype.lockMovementX = true;
+fabric.Group.prototype.lockMovementY = true;
+fabric.Group.prototype.lockUniScaling = true;
+fabric.Group.prototype.lockRotation = true;
 
 export default {
   name: "Editor",
@@ -24,11 +31,12 @@ export default {
     };
   },
   mounted() {
-    this.canvas = new fabric.Canvas("canvas");
+    let canvas = new fabric.Canvas("canvas");
     window.onfocus = () => {
-      this.canvas.renderAll();
+      canvas.renderAll();
     };
     this.hiddenImg = document.getElementById("hidden");
+    this.canvas = canvas;
   },
   methods: {
     setDimensions() {
