@@ -2,6 +2,7 @@
   <div v-if="img" class="image-row">
     <a href="#" @click.prevent="selectImage" :class="{selected: isSelected}">
       {{img.name}}
+      <span class="counter">{{img.data.objects && (img.data.objects.length || 0)}}</span>
       </a>
   </div>
 </template>

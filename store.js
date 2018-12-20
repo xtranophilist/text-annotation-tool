@@ -18,6 +18,9 @@ const store = new Vuex.Store({
     },
     getImage: (state) => (id) => {
       return state.images.find(fl => fl.id == id)
+    },
+    countAnnotation: (state) => (id) => {
+      return state.images.find(fl => fl.id == id)
     }
   },
   mutations: {
