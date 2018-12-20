@@ -119,8 +119,13 @@ export default {
     wrapper.tabIndex = 1000;
     wrapper.addEventListener("keydown", this.keyDown, false);
     this.canvas = canvas;
+    document.addEventListener("keydown", this.navigation);
   },
   methods: {
+    navigation(e){
+      // console.log(e.key);
+      // console.log(e.target);
+    },
     updateText(obj, value) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
       canvasObj.set("text", value);
@@ -165,21 +170,24 @@ export default {
       let canvas = this.canvas;
       let hiddenImg = this.hiddenImg;
       let editor = document.getElementById("editor");
-      let widthRatio = editor.clientWidth / hiddenImg.width,
-        heightRatio = editor.clientHeight / hiddenImg.height;
-      let ratio;
-      if (widthRatio < heightRatio) {
-        ratio = widthRatio;
-      } else {
-        ratio = heightRatio;
-        ratio = ratio * 0.7;
-      }
-      if (ratio > 10) {
-        ratio = 10;
-      }
+      // let widthRatio = editor.clientWidth / hiddenImg.width,
+      //   heightRatio = editor.clientHeight / hiddenImg.height;
+      // let ratio;
+      // if (widthRatio < heightRatio) {
+      //   ratio = widthRatio;
+      // } else {
+      //   ratio = heightRatio;
+      //   ratio = ratio * 0.7;
+      // }
+      // if (ratio > 10) {
+      //   ratio = 10;
+      // }
 
-      (this.newWidth = hiddenImg.width * ratio),
-        (this.newHeight = hiddenImg.height * ratio);
+      // (this.newWidth = hiddenImg.width * ratio),
+      //   (this.newHeight = hiddenImg.height * ratio);
+      this.newWidth = 1200
+      this.newHeight = hiddenImg.height * this.newWidth / hiddenImg.width;
+      console.log([this.newWidth, this.newHeight]);
       canvas.setWidth(this.newWidth);
       canvas.setHeight(this.newHeight);
     },
