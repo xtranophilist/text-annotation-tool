@@ -264,7 +264,8 @@ export default {
       let canvasData = this.$store.getters.getImage(this.selected.id).data;
       if (canvasData.objects) {
         canvas.loadFromJSON(canvasData, canvas.renderAll.bind(canvas));
-      } else {
+      }
+      // else {
         let reader = new FileReader();
         reader.onload = f => {
           var data = f.target.result;
@@ -274,7 +275,7 @@ export default {
           this.hiddenImg.src = data;
         };
         reader.readAsDataURL(file);
-      }
+      // }
     }
   },
 
