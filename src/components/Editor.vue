@@ -25,6 +25,9 @@ export default {
   },
   mounted() {
     this.canvas = new fabric.Canvas("canvas");
+    window.onfocus = () =>{
+        this.canvas.renderAll();
+    };
     this.hiddenImg = document.getElementById("hidden");
   },
   methods: {
@@ -69,6 +72,7 @@ export default {
         });
         // img = this.lock_object(img)
         canvas.setBackgroundImage(img).renderAll();
+        canvas.calcOffset();
         this.listenEvents();
       });
     },
@@ -76,27 +80,33 @@ export default {
       let start;
       let canvas = this.canvas;
       this.canvas.on("mouse:down", options => {
-        start = [options.e.layerX, options.e.layerY];
+        start = canvas.getPointer(options.e);
       });
       this.canvas.on("mouse:up", options => {
         if (!canvas.getActiveObject()) {
-          let end = [options.e.layerX, options.e.layerY];
+          let end = canvas.getPointer(options.e);
           let left, top;
-          if (start[0] < end[0]) {
-            left = start[0];
+
+          if (start.x < end.x) {
+            left = start.x;
           } else {
-            left = end[0];
+            left = end.x;
           }
-          if (start[1] < end[1]) {
-            top = start[1];
+          if (start.y < end.y) {
+            top = start.y;
           } else {
-            top = end[0];
+            top = end.y;
           }
+
+
+          let width = Math.abs(end.x - start.x);
+          let height = Math.abs(end.y - start.y);
+
           var rect = new fabric.Rect({
             left: left,
             top: top,
-            width: end[0] - start[0],
-            height: end[1] - start[1],
+            width: width,
+            height: height,
             fill: "rgba(255,127,39,0.35)"
           });
           canvas.add(rect);
@@ -108,6 +118,12 @@ export default {
   watch: {
     selected() {
       let canvas = this.canvas;
+      if (canvas.__eventListeners) {
+        canvas.__eventListeners["mouse:down"] = [];
+        canvas.__eventListeners["mouse:move"] = [];
+        canvas.__eventListeners["mouse:up"] = [];
+      }
+
       canvas.clear();
       let file = this.selected.file;
       let reader = new FileReader();
