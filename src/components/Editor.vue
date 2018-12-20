@@ -1,6 +1,8 @@
 <template>
   <div id="editor">
     <div id='canvas-wrapper'>
+      <canvas id="cant">
+      </canvas>
     <canvas id="canvas">
     </canvas>
     </div>
@@ -71,7 +73,8 @@ export default {
     return {
       hiddenImg: null,
       canvas: null,
-      canvasEl: null
+      canvasEl: null,
+      cnt: 0
     };
   },
   mounted() {
@@ -89,7 +92,21 @@ export default {
   },
   methods: {
     dataURL(left, top, width, height) {
-      let url = this.canvas.toDataURL({
+      let can2 = new fabric.Canvas("cant");
+      let img = this.hiddenImg;
+      let newImage = new fabric.Image(img, {
+        width: this.newWidth,
+        height: this.newHeight,
+        // Set the center of the new object based on the event coordinates relative
+        // to the canvas container.
+        left: 0,
+        top: 0
+    });
+    can2.setWidth(this.newWidth);
+    can2.setHeight(this.newHeight);
+    can2.add(newImage);
+    can2.renderAll();
+      let url = can2.toDataURL({
         format: "jpg",
         quality: 1,
         left: left,
@@ -97,7 +114,9 @@ export default {
         width: width,
         height: height
       });
-      console.log(url);
+      // console.log(url);
+      // let url = 'aa'
+      can2.dispose();
       return url;
     },
     update() {
@@ -156,6 +175,11 @@ export default {
     listenEvents() {
       let start;
       let canvas = this.canvas;
+      if (canvas.__eventListeners) {
+        canvas.__eventListeners["mouse:down"] = [];
+        canvas.__eventListeners["mouse:move"] = [];
+        canvas.__eventListeners["mouse:up"] = [];
+      }
       canvas.on("mouse:down", options => {
         start = canvas.getPointer(options.e);
       });
@@ -179,8 +203,14 @@ export default {
           let height = Math.abs(end.y - start.y);
 
           if (width > 3 && height > 3) {
-            let dataURL = this.dataURL(left, top, width, height);
-            
+            this.cnt++;
+            console.log(this.cnt);
+            let dataURL;
+            if (this.cnt > 2) {
+              dataURL = this.dataURL(left, top, width, height);
+            }else{
+              dataURL = '';
+            }
 
             var rect = new fabric.Rect({
               left: left,
@@ -194,6 +224,7 @@ export default {
             rect.on("modified", this.update);
             canvas.add(rect);
             canvas.renderAll();
+            // this.addImage()
             this.update();
           }
         }
@@ -203,12 +234,6 @@ export default {
   watch: {
     selected() {
       let canvas = this.canvas;
-      if (canvas.__eventListeners) {
-        canvas.__eventListeners["mouse:down"] = [];
-        canvas.__eventListeners["mouse:move"] = [];
-        canvas.__eventListeners["mouse:up"] = [];
-      }
-
       canvas.clear();
       let file = this.selected.file;
       let reader = new FileReader();
