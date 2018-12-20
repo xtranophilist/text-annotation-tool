@@ -274,6 +274,7 @@ export default {
           };
           this.hiddenImg.src = data;
         };
+        console.log(file);
         reader.readAsDataURL(file);
       // }
     }

@@ -40,16 +40,21 @@ const store = new Vuex.Store({
       let images = []
       Array.from(Array(files.length).keys()).map(x => {
         let file = files[x]
-        let id = file.lastModified + '__' + file.size + '__' + file.name
-        if (!state.images.find(image => image.id == id) && file.type.substr(0, 6) == 'image/') {
-          let dct = {
-            'name': file.name,
-            'size': file.size,
-            'id': id,
-            'file': file,
-            'data': {}
+        if (file.type.substr(0, 6) == 'image/') {
+          let id = file.lastModified + '__' + file.size + '__' + file.name
+          let existing = state.images.find(image => image.id == id)
+          if (existing) {
+            existing.file = file
+          } else {
+            let dct = {
+              'name': file.name,
+              'size': file.size,
+              'id': id,
+              'file': file,
+              'data': {}
+            }
+            images.push(dct)
           }
-          images.push(dct)
         }
       })
       if (images.length) {
