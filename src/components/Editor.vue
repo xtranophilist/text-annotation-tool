@@ -52,8 +52,18 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
     options || (options = {});
     this.callSuper("initialize", element, options);
     this.set("uid", options.uid || guidGenerator());
-    this.set("text", options.text || '');
-    this.set("dataURL", element.dataURL || '');
+    this.set("text", options.text || "");
+    this.set("dataURL", element.dataURL || "");
+  },
+
+  _render: function(ctx) {
+    this.callSuper("_render", ctx);
+    // var gradient = ctx.createLinearGradient(0, 0, c.width, 0);
+    // gradient.addColorStop("0", "magenta");
+    // gradient.addColorStop("0.5", "blue");
+    // gradient.addColorStop("1.0", "red");
+    // // Fill with gradient
+    // ctx.fillStyle = gradient;
   },
 
   toObject: function() {
@@ -138,11 +148,15 @@ export default {
       return url;
     },
     update() {
-      console.log("updating");
       this.selected.data = this.canvas.toJSON();
     },
     keyDown(e) {
-      // debugger;
+      let canvas = this.canvas;
+      let activeObj = canvas.getActiveObject();
+      if ((e.code == "Delete" || e.code == "Escape") && activeObj) {
+        canvas.remove(activeObj);
+        this.update();
+      }
     },
     setDimensions() {
       let canvas = this.canvas;
@@ -221,9 +235,7 @@ export default {
           let height = Math.abs(end.y - start.y);
 
           if (width > 3 && height > 3) {
-            
             let dataURL = this.dataURL(left, top, width, height);
-            console.log(dataURL);
 
             var rect = new fabric.Annotator({
               left: left,
@@ -251,8 +263,12 @@ export default {
       let file = this.selected.file;
       let canvasData = this.$store.getters.getImage(file.name).data;
       if (canvasData.objects) {
-        console.log(canvasData);
-        canvas.loadFromJSON(canvasData);
+        canvas.loadFromJSON(canvasData, canvas.renderAll.bind(canvas), function(
+          o,
+          object
+        ) {
+          canvas.setActiveObject(object);
+        });
       } else {
         let reader = new FileReader();
         reader.onload = f => {
