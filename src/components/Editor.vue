@@ -8,7 +8,7 @@
     <div v-if="selected" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
         <img :src="obj.dataURL"/>
-        <input v-model="obj.text"/>
+        <input :value="obj.text" @input="updateText(obj, $event.target.value)"/>
       </div>
     </div>
     <img id="hidden"/>
@@ -44,6 +44,7 @@ function guidGenerator() {
   );
 }
 
+<<<<<<< HEAD
 // // Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
 // fabric.Object.prototype.toObject = (function(toObject) {
 //   return function(properties) {
@@ -84,6 +85,27 @@ fabric.Annotator.fromObject = function(object, callback) {
 //     callback && callback(new fabric.NamedImage(img, object));
 //   });
 // };
+=======
+// Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
+fabric.Annotator = fabric.util.createClass(fabric.Rect, {
+  type: "annotator",
+
+  initialize: function(element, options) {
+    this.callSuper("initialize", element, options);
+    this.set("uid", guidGenerator());
+    options && this.set("text", options.text);
+    options && this.set("dataURL", options.dataURL);
+  },
+
+  toObject: function() {
+    return fabric.util.object.extend(this.callSuper("toObject"), {
+      uid: this.uid,
+      text: this.text,
+      dataURL: this.dataURL
+    });
+  }
+});
+>>>>>>> ok
 
 window.fabric = fabric;
 
@@ -120,6 +142,10 @@ export default {
     this.canvas = canvas;
   },
   methods: {
+    updateText(obj, value) {
+      let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
+      canvasObj.set("text", value);
+    },
     dataURL(left, top, width, height) {
       let tmpCanvas = new fabric.Canvas("tmp-canvas");
       let img = this.hiddenImg;
@@ -228,7 +254,12 @@ export default {
           let height = Math.abs(end.y - start.y);
 
           if (width > 3 && height > 3) {
+<<<<<<< HEAD
             let dataURL = this.dataURL(left, top, width, height);
+=======
+            let dataURL;
+            dataURL = this.dataURL(left, top, width, height);
+>>>>>>> ok
 
             var rect = new fabric.Annotator({
               left: left,

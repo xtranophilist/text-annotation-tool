@@ -26,11 +26,9 @@ const store = new Vuex.Store({
         if (!state.images.find(image => image.id == id) && file.type.substr(0, 6) == 'image/') {
           let dct = {
             'name': file.name,
-            'objects': [],
             'size': file.size,
             'id': id,
             'file': file,
-            'suggestions': 0,
             'data': {}
           }
           images.push(dct)
