@@ -6,7 +6,7 @@
     </div>
     <div v-if="selected" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
-        {{ getCrop(obj)}}
+        <Crop :obj="obj" :canvas="canvas"/>
         <input v-model="obj.text"/>
       </div>
     </div>
@@ -16,6 +16,8 @@
 
 <script>
 import { mapState } from "vuex";
+
+import Crop from "./Crop.vue";
 
 // import {fabric} from "fabric";
 
@@ -63,6 +65,7 @@ fabric.Group.prototype.lockRotation = true;
 
 export default {
   name: "Editor",
+  components: {Crop},
   data() {
     return {
       hiddenImg: null,
@@ -179,17 +182,6 @@ export default {
           }
         }
       });
-    },
-    getCrop(obj) {
-      var dataURL = canvas.toDataURL({
-        format: "jpg",
-        quality: 1,
-        left: obj.left,
-        top: obj.top,
-        width: obj.width,
-        height: obj.width
-      });
-      return dataURL;
     }
   },
   watch: {
