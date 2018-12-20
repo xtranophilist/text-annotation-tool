@@ -29,5 +29,7 @@ export default {
   border-right: 1px solid black;
   height: 100%;
   margin-right: 1em;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 </style>

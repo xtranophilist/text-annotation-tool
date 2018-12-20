@@ -81,7 +81,7 @@ fabric.Annotator.fromObject = function(object, callback) {
   //   callback && callback(new fabric.Annotator(enlivenedObjects, object));
   // });
   var rect = new fabric.Annotator(object);
-  callback && callback(rect);
+  callback && callback(rect); //?//
       return rect;
 };
 fabric.Annotator.async = true;
