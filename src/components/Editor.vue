@@ -4,6 +4,12 @@
     <canvas id="canvas">
     </canvas>
     </div>
+    <div v-if="selected" id="clips">
+      <div v-for="obj in selected.data.objects" :key="obj.guid">
+        {{ getCrop(obj)}}
+        <input v-model="obj.text"/>
+      </div>
+    </div>
     <img id="hidden"/>
   </div>
 </template>
@@ -15,11 +21,32 @@ import { mapState } from "vuex";
 
 import { fabric } from "fabric-browseronly";
 
+function guidGenerator() {
+  var S4 = function() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  };
+  return (
+    S4() +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    S4() +
+    S4()
+  );
+}
+
 // Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
 fabric.Object.prototype.toObject = (function(toObject) {
   return function(properties) {
     return fabric.util.object.extend(toObject.call(this, properties), {
-      text: this.text
+      text: this.text,
+      uid: guidGenerator()
     });
   };
 })(fabric.Object.prototype.toObject);
@@ -79,6 +106,7 @@ export default {
       if (ratio > 10) {
         ratio = 10;
       }
+      ratio = ratio * 0.7;
       (this.newWidth = hiddenImg.width * ratio),
         (this.newHeight = hiddenImg.height * ratio);
       canvas.setWidth(this.newWidth);
@@ -112,10 +140,10 @@ export default {
     listenEvents() {
       let start;
       let canvas = this.canvas;
-      this.canvas.on("mouse:down", options => {
+      canvas.on("mouse:down", options => {
         start = canvas.getPointer(options.e);
       });
-      this.canvas.on("mouse:up", options => {
+      canvas.on("mouse:up", options => {
         if (!canvas.getActiveObject() && !canvas.getActiveGroup()) {
           let end = canvas.getPointer(options.e);
           let left, top;
@@ -151,6 +179,17 @@ export default {
           }
         }
       });
+    },
+    getCrop(obj) {
+      var dataURL = canvas.toDataURL({
+        format: "jpg",
+        quality: 1,
+        left: obj.left,
+        top: obj.top,
+        width: obj.width,
+        height: obj.width
+      });
+      return dataURL;
     }
   },
   watch: {
