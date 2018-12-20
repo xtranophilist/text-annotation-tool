@@ -8,7 +8,7 @@
     <div v-if="selected" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
         <img :src="obj.dataURL"/>
-        <input :value="obj.text" @input="updateText(obj, $event.target.value)"/>
+        <input :value="obj.text" @input="updateText(obj, $event.target.value)" v-focus/>
       </div>
     </div>
     <img id="hidden"/>
