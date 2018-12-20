@@ -266,16 +266,17 @@ export default {
         canvas.loadFromJSON(canvasData, canvas.renderAll.bind(canvas));
       }
       // else {
-        let reader = new FileReader();
-        reader.onload = f => {
-          var data = f.target.result;
-          this.hiddenImg.onload = () => {
-            this.addImage(data);
-          };
-          this.hiddenImg.src = data;
+      let reader = new FileReader();
+      reader.onload = f => {
+        var data = f.target.result;
+        this.hiddenImg.onload = () => {
+          this.addImage(data);
         };
-        console.log(file);
+        this.hiddenImg.src = data;
+      };
+      if (file instanceof Blob) {
         reader.readAsDataURL(file);
+      }
       // }
     }
   },
