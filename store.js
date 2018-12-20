@@ -16,8 +16,8 @@ const store = new Vuex.Store({
     hasImage: (state) => (id) => {
       return state.images.find(image => image.id == id)
     },
-    getImage: (state) => (name) => {
-      return state.images.find(fl => fl.name == name)
+    getImage: (state) => (id) => {
+      return state.images.find(fl => fl.id == id)
     }
   },
   mutations: {

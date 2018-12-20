@@ -261,7 +261,7 @@ export default {
       let canvas = this.canvas;
       canvas.clear();
       let file = this.selected.file;
-      let canvasData = this.$store.getters.getImage(file.name).data;
+      let canvasData = this.$store.getters.getImage(this.selected.id).data;
       if (canvasData.objects) {
         canvas.loadFromJSON(canvasData, canvas.renderAll.bind(canvas), function(
           o,
