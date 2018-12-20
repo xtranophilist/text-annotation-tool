@@ -49,10 +49,11 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
   type: "annotator",
 
   initialize: function(element, options) {
+    options || (options = {});
     this.callSuper("initialize", element, options);
     this.set("uid", guidGenerator());
-    options && this.set("text", options.text);
-    options && this.set("dataURL", options.dataURL);
+    this.set("text", options.text || '');
+    this.set("dataURL", options.dataURL || '');
   },
 
   toObject: function() {
@@ -63,6 +64,18 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
     });
   }
 });
+
+// fabric.Annotator.fromObject = function(o, callback) {
+//   console.log(o);
+// };
+
+fabric.Annotator.fromObject = function(object, callback) {
+  fabric.util.enlivenObjects(object.objects, function(enlivenedObjects) {
+    delete object.objects;
+    callback && callback(new fabric.Annotator(enlivenedObjects, object));
+  });
+};
+fabric.Annotator.async = true;
 
 window.fabric = fabric;
 
@@ -102,6 +115,7 @@ export default {
     updateText(obj, value) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
       canvasObj.set("text", value);
+      this.$store.commit("updateText", [obj.uid, value]);
     },
     dataURL(left, top, width, height) {
       let tmpCanvas = new fabric.Canvas("tmp-canvas");
@@ -238,15 +252,21 @@ export default {
       let canvas = this.canvas;
       canvas.clear();
       let file = this.selected.file;
-      let reader = new FileReader();
-      reader.onload = f => {
-        var data = f.target.result;
-        this.hiddenImg.onload = () => {
-          this.addImage(data);
+      let canvasData = this.$store.getters.getImage(file.name).data;
+      if (canvasData.objects) {
+        console.log(canvasData);
+        canvas.loadFromJSON(canvasData);
+      } else {
+        let reader = new FileReader();
+        reader.onload = f => {
+          var data = f.target.result;
+          this.hiddenImg.onload = () => {
+            this.addImage(data);
+          };
+          this.hiddenImg.src = data;
         };
-        this.hiddenImg.src = data;
-      };
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      }
     }
   },
 

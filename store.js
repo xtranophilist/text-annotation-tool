@@ -15,6 +15,9 @@ const store = new Vuex.Store({
     },
     hasImage: (state) => (id) => {
       return state.images.find(image => image.id == id)
+    },
+    getImage: (state) => (name) => {
+      return state.images.find(fl => fl.name == name)
     }
   },
   mutations: {
@@ -40,6 +43,9 @@ const store = new Vuex.Store({
           state.selected = images[0]
         }
       }
+    },
+    updateText(state, arr) {
+      state.selected.data.objects.find(o => o.uid == arr[0]).text = arr[1]
     },
     selectImage(state, newImg) {
       state.selected = newImg
