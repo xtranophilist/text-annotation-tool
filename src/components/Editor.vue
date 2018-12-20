@@ -268,4 +268,7 @@ export default {
   opacity: 0;
   z-index: -1;
 }
+#tmp-canvas {
+  visibility: hidden;
+}
 </style>
