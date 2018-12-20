@@ -51,7 +51,7 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
   initialize: function(element, options) {
     options || (options = {});
     this.callSuper("initialize", element, options);
-    this.set("uid", guidGenerator());
+    this.set("uid", options.uid || guidGenerator());
     this.set("text", options.text || '');
     this.set("dataURL", element.dataURL || '');
   },
@@ -64,10 +64,6 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
     });
   }
 });
-
-// fabric.Annotator.fromObject = function(o, callback) {
-//   console.log(o);
-// };
 
 fabric.Annotator.fromObject = function(object, callback) {
   fabric.util.enlivenObjects(object.objects, function(enlivenedObjects) {
