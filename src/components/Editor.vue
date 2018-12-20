@@ -25,8 +25,8 @@ export default {
   },
   mounted() {
     this.canvas = new fabric.Canvas("canvas");
-    window.onfocus = () =>{
-        this.canvas.renderAll();
+    window.onfocus = () => {
+      this.canvas.renderAll();
     };
     this.hiddenImg = document.getElementById("hidden");
   },
@@ -83,7 +83,7 @@ export default {
         start = canvas.getPointer(options.e);
       });
       this.canvas.on("mouse:up", options => {
-        if (!canvas.getActiveObject()) {
+        if (!canvas.getActiveObject() && !canvas.getActiveGroup()) {
           let end = canvas.getPointer(options.e);
           let left, top;
 
@@ -98,19 +98,20 @@ export default {
             top = end.y;
           }
 
-
           let width = Math.abs(end.x - start.x);
           let height = Math.abs(end.y - start.y);
 
-          var rect = new fabric.Rect({
-            left: left,
-            top: top,
-            width: width,
-            height: height,
-            fill: "rgba(255,127,39,0.35)"
-          });
-          canvas.add(rect);
-          canvas.renderAll();
+          if (width > 5 && height > 5) {
+            var rect = new fabric.Rect({
+              left: left,
+              top: top,
+              width: width,
+              height: height,
+              fill: "rgba(255,127,39,0.35)"
+            });
+            canvas.add(rect);
+            canvas.renderAll();
+          }
         }
       });
     }
