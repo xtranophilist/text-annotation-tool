@@ -123,8 +123,14 @@ export default {
   },
   methods: {
     navigation(e){
-      // console.log(e.key);
-      // console.log(e.target);
+      if(e.target.tagName!='INPUT'){
+        if(e.key=='d' || e.key == 'D'){
+          this.$store.commit("next");
+        }
+        if(e.key=='a' || e.key == 'A'){
+          this.$store.commit("previous");
+        }
+      }
     },
     updateText(obj, value) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
@@ -187,7 +193,6 @@ export default {
       //   (this.newHeight = hiddenImg.height * ratio);
       this.newWidth = 1200
       this.newHeight = hiddenImg.height * this.newWidth / hiddenImg.width;
-      console.log([this.newWidth, this.newHeight]);
       canvas.setWidth(this.newWidth);
       canvas.setHeight(this.newHeight);
     },

@@ -69,6 +69,18 @@ const store = new Vuex.Store({
     },
     selectImage(state, newImg) {
       state.selected = newImg
+    },
+    next(state) {
+      let index = state.images.findIndex(o => o.id == state.selected.id)
+      if (state.images.length > index) {
+        state.selected = state.images[index + 1]
+      }
+    },
+    previous(state) {
+      let index = state.images.findIndex(o => o.id == state.selected.id)
+      if (index > 0) {
+        state.selected = state.images[index - 1]
+      }
     }
   }
 })
