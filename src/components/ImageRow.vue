@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     selectImage() {
-      this.$store.commit("selectImage", this.img);
+      this.$store.commit("selectImage", this.img, this.selected);
     }
   },
   computed: {

@@ -14,7 +14,18 @@ import { mapState } from "vuex";
 // import {fabric} from "fabric";
 
 import { fabric } from "fabric-browseronly";
+
+// Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
+fabric.Object.prototype.toObject = (function (toObject) {
+    return function (properties) {
+        return fabric.util.object.extend(toObject.call(this, properties), {
+            text: this.text
+        });
+    };
+})(fabric.Object.prototype.toObject);
+
 window.fabric = fabric;
+
 fabric.Group.prototype.hasControls = false;
 fabric.Group.prototype.lockScalingX = true;
 fabric.Group.prototype.lockScalingY = true;
@@ -34,6 +45,7 @@ export default {
   },
   mounted() {
     let canvas = new fabric.Canvas("canvas");
+    canvas.includeDefaultValues = false;
     window.onfocus = () => {
       canvas.renderAll();
     };
@@ -44,6 +56,10 @@ export default {
     this.canvas = canvas;
   },
   methods: {
+    update() {
+      console.log("updating");
+      this.selected.data = this.canvas.toJSON();
+    },
     keyDown(e) {
       // debugger;
     },
@@ -123,10 +139,13 @@ export default {
               top: top,
               width: width,
               height: height,
-              fill: "rgba(255,127,39,0.35)"
+              fill: "rgba(255,127,39,0.35)",
+              // text: 'PADAM'
             });
+            rect.text = 'BA'
             canvas.add(rect);
             canvas.renderAll();
+            this.update();
           }
         }
       });

@@ -31,6 +31,7 @@ const store = new Vuex.Store({
             'id': id,
             'file': file,
             'suggestions': 0,
+            'data': {}
           }
           images.push(dct)
         }
@@ -42,8 +43,8 @@ const store = new Vuex.Store({
         }
       }
     },
-    selectImage(state, img) {
-      state.selected = img
+    selectImage(state, newImg) {
+      state.selected = newImg
     }
   }
 })
