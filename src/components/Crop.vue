@@ -13,18 +13,7 @@ export default {
   },
 
   computed: {
-    dataURL() {
-      let obj = this.obj;
-      let url = this.canvas.toDataURL({
-        format: "jpg",
-        quality: 1,
-        left: obj.left,
-        top: obj.top,
-        width: obj.width,
-        height: obj.height
-      });
-      return url;
-    }
+    
   }
 };
 </script>

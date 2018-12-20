@@ -6,7 +6,7 @@
     </div>
     <div v-if="selected" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
-        <Crop :obj="obj" :canvas="canvas"/>
+        <img :src="obj.dataURL"/>
         <input v-model="obj.text"/>
       </div>
     </div>
@@ -48,6 +48,7 @@ fabric.Object.prototype.toObject = (function(toObject) {
   return function(properties) {
     return fabric.util.object.extend(toObject.call(this, properties), {
       text: this.text,
+      dataURL: this.dataURL,
       uid: guidGenerator()
     });
   };
@@ -65,7 +66,7 @@ fabric.Group.prototype.lockRotation = true;
 
 export default {
   name: "Editor",
-  components: {Crop},
+  components: { Crop },
   data() {
     return {
       hiddenImg: null,
@@ -81,12 +82,24 @@ export default {
       canvas.renderAll();
     };
     this.hiddenImg = document.getElementById("hidden");
-    this.wrapper = document.getElementById("canvas-wrapper");
-    this.wrapper.tabIndex = 1000;
-    this.wrapper.addEventListener("keydown", this.keyDown, false);
+    let wrapper = document.getElementById("canvas-wrapper");
+    wrapper.tabIndex = 1000;
+    wrapper.addEventListener("keydown", this.keyDown, false);
     this.canvas = canvas;
   },
   methods: {
+    dataURL(left, top, width, height) {
+      let url = this.canvas.toDataURL({
+        format: "jpg",
+        quality: 1,
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      });
+      console.log(url);
+      return url;
+    },
     update() {
       console.log("updating");
       this.selected.data = this.canvas.toJSON();
@@ -165,16 +178,19 @@ export default {
           let width = Math.abs(end.x - start.x);
           let height = Math.abs(end.y - start.y);
 
-          if (width > 5 && height > 5) {
+          if (width > 3 && height > 3) {
+            let dataURL = this.dataURL(left, top, width, height);
+            
+
             var rect = new fabric.Rect({
               left: left,
               top: top,
               width: width,
               height: height,
-              fill: "rgba(255,127,39,0.35)"
-              // text: 'PADAM'
+              fill: "rgba(255,127,39,0.35)",
+              dataURL: dataURL
             });
-            rect.text = "BA";
+
             rect.on("modified", this.update);
             canvas.add(rect);
             canvas.renderAll();
