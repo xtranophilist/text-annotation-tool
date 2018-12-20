@@ -53,7 +53,7 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
     this.callSuper("initialize", element, options);
     this.set("uid", options.uid || guidGenerator());
     this.set("text", options.text || "");
-    this.set("dataURL", element.dataURL || "");
+    this.set("dataURL", element.dataURL || options.dataURL || "");
   },
 
   _render: function(ctx) {
@@ -263,12 +263,7 @@ export default {
       let file = this.selected.file;
       let canvasData = this.$store.getters.getImage(this.selected.id).data;
       if (canvasData.objects) {
-        canvas.loadFromJSON(canvasData, canvas.renderAll.bind(canvas), function(
-          o,
-          object
-        ) {
-          canvas.setActiveObject(object);
-        });
+        canvas.loadFromJSON(canvasData, canvas.renderAll.bind(canvas));
       } else {
         let reader = new FileReader();
         reader.onload = f => {
