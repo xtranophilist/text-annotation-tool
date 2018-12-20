@@ -8,7 +8,7 @@
     <div v-if="selected" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
         <img :src="obj.dataURL"/>
-        <input v-model="obj.text"/>
+        <input :value="obj.text" @input="updateText(obj, $event.target.value)"/>
       </div>
     </div>
     <img id="hidden"/>
@@ -45,15 +45,24 @@ function guidGenerator() {
 }
 
 // Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
-fabric.Object.prototype.toObject = (function(toObject) {
-  return function(properties) {
-    return fabric.util.object.extend(toObject.call(this, properties), {
+fabric.Annotator = fabric.util.createClass(fabric.Rect, {
+  type: "annotator",
+
+  initialize: function(element, options) {
+    this.callSuper("initialize", element, options);
+    this.set("uid", guidGenerator());
+    options && this.set("text", options.text);
+    options && this.set("dataURL", options.dataURL);
+  },
+
+  toObject: function() {
+    return fabric.util.object.extend(this.callSuper("toObject"), {
+      uid: this.uid,
       text: this.text,
-      dataURL: this.dataURL,
-      uid: guidGenerator()
+      dataURL: this.dataURL
     });
-  };
-})(fabric.Object.prototype.toObject);
+  }
+});
 
 window.fabric = fabric;
 
@@ -90,6 +99,10 @@ export default {
     this.canvas = canvas;
   },
   methods: {
+    updateText(obj, value) {
+      let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
+      canvasObj.set("text", value);
+    },
     dataURL(left, top, width, height) {
       let tmpCanvas = new fabric.Canvas("tmp-canvas");
       let img = this.hiddenImg;
@@ -98,11 +111,11 @@ export default {
         height: this.newHeight,
         left: 0,
         top: 0
-    });
-    tmpCanvas.setWidth(this.newWidth);
-    tmpCanvas.setHeight(this.newHeight);
-    tmpCanvas.add(newImage);
-    tmpCanvas.renderAll();
+      });
+      tmpCanvas.setWidth(this.newWidth);
+      tmpCanvas.setHeight(this.newHeight);
+      tmpCanvas.add(newImage);
+      tmpCanvas.renderAll();
       let url = tmpCanvas.toDataURL({
         format: "jpg",
         quality: 1,
@@ -198,17 +211,10 @@ export default {
           let height = Math.abs(end.y - start.y);
 
           if (width > 3 && height > 3) {
-            this.cnt++;
-            console.log(this.cnt);
             let dataURL;
             dataURL = this.dataURL(left, top, width, height);
-            // if (this.cnt > 2) {
-              
-            // }else{
-            //   dataURL = '';
-            // }
 
-            var rect = new fabric.Rect({
+            var rect = new fabric.Annotator({
               left: left,
               top: top,
               width: width,
