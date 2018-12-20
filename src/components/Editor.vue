@@ -76,10 +76,13 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
 });
 
 fabric.Annotator.fromObject = function(object, callback) {
-  fabric.util.enlivenObjects(object.objects, function(enlivenedObjects) {
-    delete object.objects;
-    callback && callback(new fabric.Annotator(enlivenedObjects, object));
-  });
+  // fabric.util.enlivenObjects(object.objects, function(enlivenedObjects) {
+  //   delete object.objects;
+  //   callback && callback(new fabric.Annotator(enlivenedObjects, object));
+  // });
+  var rect = new fabric.Annotator(object);
+  callback && callback(rect);
+      return rect;
 };
 fabric.Annotator.async = true;
 
@@ -301,5 +304,11 @@ export default {
 }
 #tmp-canvas {
   visibility: hidden;
+}
+
+#clips div{
+  float: left;
+  padding: .5em;
+
 }
 </style>
