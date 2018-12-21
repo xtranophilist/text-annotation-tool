@@ -110,12 +110,12 @@ export default {
     document.addEventListener("keydown", this.navigation);
   },
   methods: {
-    navigation(e){
-      if(e.target.tagName!='INPUT'){
-        if(e.key=='d' || e.key == 'D'){
+    navigation(e) {
+      if (e.target.tagName != "INPUT") {
+        if (e.key == "d" || e.key == "D") {
           this.$store.commit("next");
         }
-        if(e.key=='a' || e.key == 'A'){
+        if (e.key == "a" || e.key == "A") {
           this.$store.commit("previous");
         }
       }
@@ -150,6 +150,15 @@ export default {
       return url;
     },
     update() {
+      let obj = this.canvas.getActiveObject();
+      if (obj) {
+        obj.dataURL = this.dataURL(
+          obj.left,
+          obj.top,
+          obj.getWidth(),
+          obj.getHeight()
+        );
+      }
       this.selected.data = this.canvas.toJSON();
     },
     keyDown(e) {
@@ -179,7 +188,7 @@ export default {
 
       // (this.newWidth = hiddenImg.width * ratio),
       //   (this.newHeight = hiddenImg.height * ratio);
-      this.newWidth = 1200
+      this.newWidth = 1200;
       this.newHeight = hiddenImg.height * this.newWidth / hiddenImg.width;
       canvas.setWidth(this.newWidth);
       canvas.setHeight(this.newHeight);
@@ -250,7 +259,6 @@ export default {
               fill: "rgba(255,127,39,0.35)",
               dataURL: dataURL
             });
-
             rect.on("modified", this.update);
             canvas.add(rect);
             canvas.renderAll();
@@ -268,7 +276,13 @@ export default {
       let file = this.selected.file;
       let canvasData = this.$store.getters.getImage(this.selected.id).data;
       if (canvasData.objects) {
-        canvas.loadFromJSON(canvasData, canvas.renderAll.bind(canvas));
+        canvas.loadFromJSON(
+          canvasData,
+          canvas.renderAll.bind(canvas),
+          (o, object) => {
+            object.on("modified", this.update);
+          }
+        );
       }
       // else {
       let reader = new FileReader();
