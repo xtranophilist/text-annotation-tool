@@ -7,6 +7,7 @@
       <option v-for="(value, key) in presets" :key="key">{{key}}</option>
     </select>
     <a href="#" @click.prevent="clearFiles">Clear</a>
+    {{size}} KB
     <Dropzone/>
     <div v-for="image in enabledImages" :key="image.id">
       <ImageRow :img="image"/>
@@ -25,17 +26,39 @@ export default {
     Dropzone,
     ImageRow
   },
+  data() {
+    return {
+      size: 0
+    };
+  },
+  created() {
+    this.$store.watch(state => state, this.handleStateUpdate, {deep: true});
+    this.handleStateUpdate()
+    console.log(this.size);
+  },
   methods: {
     clearFiles() {
       this.$store.commit("clearFiles");
     },
     updatePreset(val) {
       this.$store.commit("updatePreset", val);
+    },
+    handleStateUpdate() {
+      console.log('hey')
+      let allStrings = "";
+      for (let key in window.localStorage) {
+        if (window.localStorage.hasOwnProperty(key)) {
+          allStrings += window.localStorage[key];
+        }
+      }
+      this.size = allStrings
+        ? ((3 + allStrings.length * 16 / (8 * 1024)))
+        : 0;
     }
   },
   computed: {
     ...mapState(["images", "preset", "presets"]),
-    ...mapGetters(["enabledImages"])
+    ...mapGetters(["enabledImages"]),
   }
 };
 </script>
