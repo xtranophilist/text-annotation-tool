@@ -117,16 +117,6 @@ export default {
       this.canvas.setActiveObject(canvasObj);
       this.canvas.renderAll();
     },
-    navigation(e) {
-      if (e.target.tagName != "INPUT") {
-        if (e.key == "d" || e.key == "D") {
-          this.$store.commit("next");
-        }
-        if (e.key == "a" || e.key == "A") {
-          this.$store.commit("previous");
-        }
-      }
-    },
     updateText(obj, value) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
       canvasObj.set("text", value);
@@ -168,12 +158,40 @@ export default {
       }
       this.selected.data = this.canvas.toJSON();
     },
+    navigation(e) {
+      if (e.target.tagName != "INPUT") {
+        if (e.key == "d" || e.key == "D") {
+          this.$store.commit("next");
+        }
+        if (e.key == "a" || e.key == "A") {
+          this.$store.commit("previous");
+        }
+      }
+    },
     keyDown(e) {
+      if (e.target.tagName == "INPUT") {
+        return;
+      }
+
+      const STEP = 2;
       let canvas = this.canvas;
-      let activeObj = canvas.getActiveObject();
-      if ((e.code == "Delete" || e.code == "Escape") && activeObj) {
-        canvas.remove(activeObj);
-        this.update();
+      let code = e.code;
+      let obj = canvas.getActiveObject();
+      if (obj) {
+        e.preventDefault();
+        if (code == "Delete" || code == "Escape") {
+          canvas.remove(obj);
+          this.update();
+        } else if (code == "ArrowLeft") {
+          obj.setLeft(obj.getLeft() - STEP);
+        } else if (code == "ArrowRight") {
+          obj.setLeft(obj.getLeft() + STEP);
+        } else if (code == "ArrowUp") {
+          obj.setTop(obj.getTop() - STEP);
+        } else if (code == "ArrowDown") {
+          obj.setTop(obj.getTop() + STEP);
+        }
+        this.canvas.renderAll();
       }
     },
     setDimensions() {
@@ -242,7 +260,7 @@ export default {
         "," +
         o(r() * s) +
         "," +
-        '0.35' +
+        "0.35" +
         ")"
       );
     },
