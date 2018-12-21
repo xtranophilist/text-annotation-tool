@@ -23,6 +23,7 @@ export default {
 <style>
 body, html{
   height: 100%;
+  margin: 0;
 }
 a:visited{
   color: #1a0dab;

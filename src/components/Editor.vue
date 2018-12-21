@@ -390,6 +390,9 @@ export default {
 #tmp-canvas {
   visibility: hidden;
 }
+#canvas-wrapper {
+  outline: none;
+}
 
 #clips div {
   float: left;
