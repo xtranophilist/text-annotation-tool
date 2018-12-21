@@ -4,7 +4,7 @@
 <div style="visibility:hidden; opacity:0" id="dropzone">
     <div id="textnode">Drop anywhere!</div>
 </div>
-<div id=text>Drag a file anywhere</div>
+<div v-if="!images.length" id="text">Drag a file anywhere</div>
 </div>
 </template>
 
