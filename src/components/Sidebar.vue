@@ -32,9 +32,8 @@ export default {
     };
   },
   created() {
-    this.$store.watch(state => state, this.handleStateUpdate, {deep: true});
+    // this.$store.watch(state => state, this.handleStateUpdate, {deep: true});
     this.handleStateUpdate()
-    console.log(this.size);
   },
   methods: {
     clearFiles() {
@@ -44,7 +43,6 @@ export default {
       this.$store.commit("updatePreset", val);
     },
     handleStateUpdate() {
-      console.log('hey')
       let allStrings = "";
       for (let key in window.localStorage) {
         if (window.localStorage.hasOwnProperty(key)) {
