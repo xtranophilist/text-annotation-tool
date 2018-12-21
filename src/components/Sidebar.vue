@@ -2,7 +2,8 @@
   <div class="sidebar">
     <h1>OCR GT</h1>
     <!-- {{presets}} -->
-    <select @change="updatePreset($event.target.value)" :value="preset">
+    Preset: <select @change="updatePreset($event.target.value)" :value="preset">
+      <option value="">None</option>
       <option v-for="(value, key) in presets" :key="key">{{key}}</option>
     </select>
       
