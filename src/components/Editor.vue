@@ -1,16 +1,16 @@
 <template>
   <div id="editor">
-    <div id='canvas-wrapper'>
+    <div id="canvas-wrapper">
     <canvas id="canvas">
     </canvas>
-    </div>
-    <canvas id="tmp-canvas"></canvas>
     <div v-if="selected" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
-        <img :src="obj.dataURL"/>
+        <img :src="obj.dataURL" @click="selectObject(obj)"/>
         <input :value="obj.text" @input="updateText(obj, $event.target.value)" v-focus/>
       </div>
     </div>
+    </div>
+    <canvas id="tmp-canvas"></canvas>
     <img id="hidden"/>
   </div>
 </template>
@@ -110,6 +110,11 @@ export default {
     document.addEventListener("keydown", this.navigation);
   },
   methods: {
+    selectObject(obj) {
+      let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
+      this.canvas.setActiveObject(canvasObj);
+      this.canvas.renderAll();
+    },
     navigation(e) {
       if (e.target.tagName != "INPUT") {
         if (e.key == "d" || e.key == "D") {
