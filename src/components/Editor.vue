@@ -156,7 +156,8 @@ export default {
           obj.getHeight()
         );
       }
-      this.selected.data = this.canvas.toJSON();
+      // this.selected.data = this.canvas.toJSON();
+      this.$store.commit('updateData', this.canvas.toJSON())
     },
     navigation(e) {
       if (e.target.tagName != "INPUT") {

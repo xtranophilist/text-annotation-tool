@@ -80,6 +80,9 @@ const store = new Vuex.Store({
     updateText(state, arr) {
       state.selected.data.objects.find(o => o.uid == arr[0]).text = arr[1]
     },
+    updateData(state, data) {
+      state.selected.data = data
+    },
     updatePreset(state, preset) {
       state.preset = preset
     },
