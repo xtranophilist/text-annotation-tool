@@ -6,9 +6,9 @@
       <option value="">None</option>
       <option v-for="(value, key) in presets" :key="key">{{key}}</option>
     </select>
-      
+    <a href="#" @click.prevent="clearFiles">Clear</a>
     <Dropzone/>
-    <div v-for="image in images" :key="image.id">
+    <div v-for="image in enabledImages" :key="image.id">
       <ImageRow :img="image"/>
     </div>
   </div>
@@ -17,7 +17,7 @@
 <script>
 import Dropzone from "./Dropzone.vue";
 import ImageRow from "./ImageRow.vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "Sidebar",
@@ -26,11 +26,17 @@ export default {
     ImageRow
   },
   methods: {
+    clearFiles() {
+      this.$store.commit("clearFiles");
+    },
     updatePreset(val) {
       this.$store.commit("updatePreset", val);
     }
   },
-  computed: mapState(["images", "preset", "presets"])
+  computed: {
+    ...mapState(["images", "preset", "presets"]),
+    ...mapGetters(["enabledImages"])
+  }
 };
 </script>
 

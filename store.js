@@ -33,6 +33,9 @@ const store = new Vuex.Store({
     hasImage: (state) => (id) => {
       return state.images.find(image => image.id == id)
     },
+    enabledImages: (state) => {
+      return state.images.filter(i => i.enabled == true);
+    },
     getImage: (state) => (id) => {
       return state.images.find(fl => fl.id == id)
     },
@@ -53,13 +56,15 @@ const store = new Vuex.Store({
           let existing = state.images.find(image => image.id == id)
           if (existing) {
             existing.file = file
+            existing.enabled = true
           } else {
             let dct = {
               'name': file.name,
               'size': file.size,
               'id': id,
               'file': file,
-              'data': {}
+              'data': {},
+              'enabled': true
             }
             images.push(dct)
           }
@@ -80,6 +85,9 @@ const store = new Vuex.Store({
     },
     selectImage(state, newImg) {
       state.selected = newImg
+    },
+    clearFiles(state) {
+      state.images.forEach(i => i.enabled = false)
     },
     next(state) {
       let index = state.images.findIndex(o => o.id == state.selected.id)
