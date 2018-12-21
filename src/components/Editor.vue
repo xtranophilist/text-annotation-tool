@@ -121,7 +121,9 @@ export default {
     },
     updateText(obj, value) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
-      canvasObj.set("text", value);
+      if (canvasObj) {
+        canvasObj.set("text", value);
+      }
       this.$store.commit("updateText", [obj.uid, value]);
     },
     dataURL(left, top, width, height) {
