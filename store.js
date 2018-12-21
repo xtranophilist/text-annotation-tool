@@ -22,7 +22,6 @@ const store = new Vuex.Store({
     images: [],
     presets: {
       'IKAD': ['NAME', 'PASSPORT', 'NO', 'DATE', 'OF', 'BIRTH', 'SECTOR', 'EMPLOYER', 'ADDRESS', 'EXPIRY', 'DATE', 'GENDER'],
-      'IKAD1': ['NAME', 'PASSPORT', 'NO', 'DATE', 'OF', 'BIRTH', 'SECTOR', 'EMPLOYER', 'ADDRESS', 'EXPIRY', 'DATE', 'GENDER']
     },
     preset: null,
 

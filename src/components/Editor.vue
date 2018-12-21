@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import Crop from "./Crop.vue";
 
@@ -255,6 +255,10 @@ export default {
 
           if (width > 3 && height > 3) {
             let dataURL = this.dataURL(left, top, width, height);
+            let text = "";
+            if (this.getPresets && this.getPresets.length > this.cnt) {
+              text = this.getPresets[this.cnt];
+            }
 
             var rect = new fabric.Annotator({
               left: left,
@@ -262,10 +266,12 @@ export default {
               width: width,
               height: height,
               fill: "rgba(255,127,39,0.35)",
-              dataURL: dataURL
+              dataURL: dataURL,
+              text: text
             });
             rect.on("modified", this.update);
             canvas.add(rect);
+            this.cnt++;
             canvas.renderAll();
             // this.addImage()
             this.update();
@@ -278,6 +284,7 @@ export default {
     selected() {
       let canvas = this.canvas;
       canvas.clear();
+      this.cnt = 0;
       let file = this.selected.file;
       let canvasData = this.$store.getters.getImage(this.selected.id).data;
       if (canvasData.objects) {
@@ -286,6 +293,7 @@ export default {
           canvas.renderAll.bind(canvas),
           (o, object) => {
             object.on("modified", this.update);
+            this.cnt++;
           }
         );
       }
@@ -306,16 +314,15 @@ export default {
   },
 
   computed: {
-    ...mapState(["selected"])
+    ...mapState(["selected"]),
+    ...mapGetters(["getPresets"])
   }
 };
 </script>
 
 
 <style>
-#canvas {
-  border: 1px solid red;
-}
+
 #hidden {
   position: absolute;
   top: 0;
