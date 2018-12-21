@@ -114,8 +114,10 @@ export default {
   methods: {
     selectObject(obj) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
-      this.canvas.setActiveObject(canvasObj);
-      this.canvas.renderAll();
+      if (canvasObj) {
+        this.canvas.setActiveObject(canvasObj);
+        this.canvas.renderAll();
+      }
     },
     updateText(obj, value) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
@@ -157,7 +159,7 @@ export default {
         );
       }
       // this.selected.data = this.canvas.toJSON();
-      this.$store.commit('updateData', this.canvas.toJSON())
+      this.$store.commit("updateData", this.canvas.toJSON());
     },
     navigation(e) {
       if (e.target.tagName != "INPUT") {
