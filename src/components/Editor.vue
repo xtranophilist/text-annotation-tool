@@ -20,8 +20,6 @@ import { mapState } from "vuex";
 
 import Crop from "./Crop.vue";
 
-// import {fabric} from "fabric";
-
 import { fabric } from "fabric-browseronly";
 
 function guidGenerator() {
@@ -51,19 +49,13 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
   initialize: function(element, options) {
     options || (options = {});
     this.callSuper("initialize", element, options);
-    this.set("uid", options.uid || guidGenerator());
-    this.set("text", options.text || "");
+    this.set("uid", options.uid || element.uid || guidGenerator());
+    this.set("text", options.text || element.text || "");
     this.set("dataURL", element.dataURL || options.dataURL || "");
   },
 
   _render: function(ctx) {
     this.callSuper("_render", ctx);
-    // var gradient = ctx.createLinearGradient(0, 0, c.width, 0);
-    // gradient.addColorStop("0", "magenta");
-    // gradient.addColorStop("0.5", "blue");
-    // gradient.addColorStop("1.0", "red");
-    // // Fill with gradient
-    // ctx.fillStyle = gradient;
   },
 
   toObject: function() {
@@ -76,10 +68,6 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
 });
 
 fabric.Annotator.fromObject = function(object, callback) {
-  // fabric.util.enlivenObjects(object.objects, function(enlivenedObjects) {
-  //   delete object.objects;
-  //   callback && callback(new fabric.Annotator(enlivenedObjects, object));
-  // });
   var rect = new fabric.Annotator(object);
   callback && callback(rect); //?//
   return rect;

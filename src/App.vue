@@ -24,6 +24,9 @@ export default {
 body, html{
   height: 100%;
 }
+a:visited{
+  color: #1a0dab;
+}
 #app {
   min-height: 100%;
   display: grid;

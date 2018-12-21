@@ -1,8 +1,8 @@
 <template>
   <div v-if="img" class="image-row">
-    <a href="#" @click.prevent="selectImage" :class="{selected: isSelected}">
+    <a href="#" @click.prevent="selectImage" :class="{selected: isSelected, empty:!hasFile}">
       {{img.name}}
-      <span class="counter">{{img.data.objects && (img.data.objects.length || 0)}}</span>
+      <span v-if="img.data.objects && img.data.objects.length" class="counter">{{img.data.objects && img.data.objects.length}}</span>
       </a>
   </div>
 </template>
@@ -27,6 +27,9 @@ export default {
     ...mapState(["selected"]),
     isSelected() {
       return this.selected.id === this.img.id;
+    },
+    hasFile(){
+      return this.img.file instanceof Blob;
     }
   }
 };
@@ -37,7 +40,15 @@ export default {
 .image-row a {
   display: block;
 }
+a.empty{
+  color: #e22c2c !important;
+}
 .selected {
   font-weight: bold;
+}
+.counter {
+  background: #666;
+  color: #fff;
+  padding: 0.1em;
 }
 </style>
