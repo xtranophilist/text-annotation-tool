@@ -8,6 +8,8 @@
     </select>
     <a href="#" @click.prevent="clearFiles">Clear</a>
     <a href="#" @click.prevent="download">Export</a>
+    <input id="localImport" type="file" @change="importLocal" style="visibility:hidden" />
+    <input type="button" value="Import" onclick="document.getElementById('localImport').click();" />
     {{size}} KB
     <Dropzone/>
     <div v-for="image in enabledImages" :key="image.id">
@@ -37,6 +39,18 @@ export default {
     this.handleStateUpdate();
   },
   methods: {
+    importLocal(e) {
+      let file = e.target.files[0];
+      let read = new FileReader();
+      read.readAsBinaryString(file);
+      read.onloadend = function() {
+        var data = JSON.parse(JSON.parse(read.result));
+        Object.keys(data).forEach(function(k) {
+          localStorage.setItem(k, data[k]);
+        });
+        window.location.reload();
+      };
+    },
     clearFiles() {
       this.$store.commit("clearFiles");
     },
