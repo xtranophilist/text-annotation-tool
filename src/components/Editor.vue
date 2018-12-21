@@ -266,11 +266,13 @@ export default {
               width: width,
               height: height,
               fill: "rgba(255,127,39,0.35)",
+              hasControls: true,
               dataURL: dataURL,
-              text: text
+              text: text,
             });
             rect.on("modified", this.update);
             canvas.add(rect);
+            canvas.selection = false;
             this.cnt++;
             canvas.renderAll();
             // this.addImage()
