@@ -1,20 +1,27 @@
 <template>
   <div class="sidebar">
-    <h1>OCR GT</h1>
+    <!-- <h1>OCR GT</h1> -->
     <!-- {{presets}} -->
+    <div class="header">
+    <div>
     Preset: <select @change="updatePreset($event.target.value)" :value="preset">
       <option value="">None</option>
       <option v-for="(value, key) in presets" :key="key">{{key}}</option>
     </select>
+    </div>
     <a href="#" @click.prevent="clearFiles">Clear</a>
     <a href="#" @click.prevent="download">Export</a>
-    <input id="localImport" type="file" @change="importLocal" style="visibility:hidden" />
+    <div>
+    <input id="localImport" type="file" @change="importLocal" class="hidden" />
     <input type="button" value="Import" onclick="document.getElementById('localImport').click();" />
-    {{size}} KB
-    <Dropzone/>
+    </div>
+    <div>{{size}} KB</div>
+    </div>
+    <hr/>
     <div v-for="image in enabledImages" :key="image.id">
       <ImageRow :img="image"/>
     </div>
+    <Dropzone/>
   </div>
 </template>
 
@@ -90,5 +97,15 @@ export default {
   margin-right: 1em;
   max-height: 100vh;
   overflow-y: auto;
+}
+h1 {
+  margin: 5px 0;
+}
+.hidden {
+  display: none !important;
+}
+.header * {
+  display: inline-block;
+  padding: 0 0.2em;
 }
 </style>
