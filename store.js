@@ -76,6 +76,11 @@ const store = new Vuex.Store({
           state.selected = images[0]
         }
       }
+      if (state.selected){
+        let img  = state.images.find(i=>i.id==state.selected.id)
+        state.selected = null
+        state.selected = img
+      }
     },
     updateText(state, arr) {
       state.selected.data.objects.find(o => o.uid == arr[0]).text = arr[1]
