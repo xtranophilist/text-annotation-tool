@@ -7,6 +7,7 @@
       <option v-for="(value, key) in presets" :key="key">{{key}}</option>
     </select>
     <a href="#" @click.prevent="clearFiles">Clear</a>
+    <a href="#" @click.prevent="download">Export</a>
     {{size}} KB
     <Dropzone/>
     <div v-for="image in enabledImages" :key="image.id">
@@ -33,7 +34,7 @@ export default {
   },
   created() {
     // this.$store.watch(state => state, this.handleStateUpdate, {deep: true});
-    this.handleStateUpdate()
+    this.handleStateUpdate();
   },
   methods: {
     clearFiles() {
@@ -42,6 +43,15 @@ export default {
     updatePreset(val) {
       this.$store.commit("updatePreset", val);
     },
+    download() {
+      let a = document.createElement("a");
+      let localStorageData = JSON.stringify(JSON.stringify(localStorage));
+      a.href = "data:text/plain," + localStorageData;
+      a.download = new Date().toISOString() + ".txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    },
     handleStateUpdate() {
       let allStrings = "";
       for (let key in window.localStorage) {
@@ -49,14 +59,12 @@ export default {
           allStrings += window.localStorage[key];
         }
       }
-      this.size = allStrings
-        ? ((3 + allStrings.length * 16 / (8 * 1024)))
-        : 0;
+      this.size = allStrings ? 3 + allStrings.length * 16 / (8 * 1024) : 0;
     }
   },
   computed: {
     ...mapState(["images", "preset", "presets"]),
-    ...mapGetters(["enabledImages"]),
+    ...mapGetters(["enabledImages"])
   }
 };
 </script>
