@@ -1,6 +1,11 @@
 <template>
   <div class="sidebar">
     <h1>OCR GT</h1>
+    <!-- {{presets}} -->
+    <select @change="updatePreset($event.target.value)" :value="preset">
+      <option v-for="(value, key) in presets" :key="key">{{key}}</option>
+    </select>
+      
     <Dropzone/>
     <div v-for="image in images" :key="image.id">
       <ImageRow :img="image"/>
@@ -19,10 +24,14 @@ export default {
     Dropzone,
     ImageRow
   },
-  computed: mapState(["images"])
+  methods: {
+    updatePreset(val) {
+      this.$store.commit("updatePreset", val);
+    }
+  },
+  computed: mapState(["images", "preset", "presets"])
 };
 </script>
-
 
 <style>
 .sidebar {

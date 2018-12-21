@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
-import VuexPersist from 'vuex-persist';
+import VuexPersist from 'vuex-persist'
 
 // import { getBase64 } from './utils'
 
@@ -19,7 +19,13 @@ const store = new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     selected: null,
-    images: []
+    images: [],
+    presets: {
+      'IKAD': ['NAME', 'PASSPORT', 'NO', 'DATE', 'OF', 'BIRTH', 'SECTOR', 'EMPLOYER', 'ADDRESS', 'EXPIRY', 'DATE', 'GENDER'],
+      'IKAD1': ['NAME', 'PASSPORT', 'NO', 'DATE', 'OF', 'BIRTH', 'SECTOR', 'EMPLOYER', 'ADDRESS', 'EXPIRY', 'DATE', 'GENDER']
+    },
+    preset: null,
+
   },
   getters: {
     imagePaths: state => {
@@ -33,6 +39,9 @@ const store = new Vuex.Store({
     },
     countAnnotation: (state) => (id) => {
       return state.images.find(fl => fl.id == id)
+    },
+    getPresets: (state) => {
+      return state.presets[state.preset]
     }
   },
   mutations: {
@@ -66,6 +75,9 @@ const store = new Vuex.Store({
     },
     updateText(state, arr) {
       state.selected.data.objects.find(o => o.uid == arr[0]).text = arr[1]
+    },
+    updatePreset(state, preset) {
+      state.preset = preset
     },
     selectImage(state, newImg) {
       state.selected = newImg
