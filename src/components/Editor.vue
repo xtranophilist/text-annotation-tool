@@ -230,6 +230,22 @@ export default {
         o.selectable = bool;
       });
     },
+    random_rgba() {
+      var o = Math.round,
+        r = Math.random,
+        s = 255;
+      return (
+        "rgba(" +
+        o(r() * s) +
+        "," +
+        o(r() * s) +
+        "," +
+        o(r() * s) +
+        "," +
+        '0.35' +
+        ")"
+      );
+    },
     listenEvents() {
       let start;
       let canvas = this.canvas;
@@ -281,7 +297,8 @@ export default {
               top: top,
               width: width,
               height: height,
-              fill: "rgba(255,127,39,0.35)",
+              // fill: "rgba(255,127,39,0.35)",
+              fill: this.random_rgba(),
               hasControls: true,
               dataURL: dataURL,
               text: text
