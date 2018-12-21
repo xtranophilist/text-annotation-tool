@@ -97,7 +97,9 @@ export default {
   },
   mounted() {
     let canvas = new fabric.Canvas("canvas");
+
     window.c = canvas;
+
     canvas.includeDefaultValues = false;
     window.onfocus = () => {
       canvas.renderAll();
@@ -223,6 +225,11 @@ export default {
         this.listenEvents();
       });
     },
+    setObjectsSelectable(bool) {
+      this.canvas.getObjects().forEach(o => {
+        o.selectable = bool;
+      });
+    },
     listenEvents() {
       let start;
       let canvas = this.canvas;
@@ -232,10 +239,19 @@ export default {
         canvas.__eventListeners["mouse:up"] = [];
       }
       canvas.on("mouse:down", options => {
+        // if the current cursor isn't over an object, disable selection
+        if (
+          !this.canvas._searchPossibleTargets(
+            this.canvas.getObjects(),
+            canvas.getPointer(options.e)
+          )
+        ) {
+          this.setObjectsSelectable(false);
+        }
         start = canvas.getPointer(options.e);
       });
       canvas.on("mouse:up", options => {
-        if (!canvas.getActiveObject() && !canvas.getActiveGroup()) {
+        if (start && !canvas.getActiveObject() && !canvas.getActiveGroup()) {
           let end = canvas.getPointer(options.e);
           let left, top;
 
@@ -268,16 +284,16 @@ export default {
               fill: "rgba(255,127,39,0.35)",
               hasControls: true,
               dataURL: dataURL,
-              text: text,
+              text: text
             });
             rect.on("modified", this.update);
             canvas.add(rect);
-            canvas.selection = false;
             this.cnt++;
             canvas.renderAll();
             // this.addImage()
             this.update();
           }
+          this.setObjectsSelectable(true);
         }
       });
     }
@@ -324,7 +340,6 @@ export default {
 
 
 <style>
-
 #hidden {
   position: absolute;
   top: 0;
