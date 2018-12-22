@@ -23,11 +23,15 @@ export default {
 <style>
 body, html{
   height: 100%;
+  margin: 0;
+}
+a:visited{
+  color: #1a0dab;
 }
 #app {
   min-height: 100%;
   display: grid;
-  grid-template-columns: 400px auto;
+  grid-template-columns: 350px auto;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

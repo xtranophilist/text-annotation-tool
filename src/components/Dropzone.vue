@@ -1,55 +1,94 @@
 
 <template>
-
-  <div class="dropzone">
-    <form class="box" method="post" action="" enctype="multipart/form-data">
-    <label for="files">
-      Drop your files here or click to append.<br/>
-      <span> ({{images.length}} <span v-if="images.length==1">image</span><span v-else>images</span>)</span>
-      </label>
-    
-    <input class="file-input" id="files" type="file" multiple @change="filesChanged" accept="image/*"/>    
-</form>
-  </div>
+<div>
+<div style="visibility:hidden; opacity:0" id="dropzone">
+    <div id="textnode">Drop anywhere!</div>
+</div>
+<div v-if="!images.length" id="text">Drag a file anywhere</div>
+</div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 export default {
-  name: 'Dropzone',
+  name: "Dropzone",
+  mounted() {
+    let lastTarget = null;
+    window.addEventListener("dragenter", e => {
+      if (this.isFile(e)) {
+        lastTarget = e.target;
+        document.querySelector("#dropzone").style.visibility = "";
+        document.querySelector("#dropzone").style.opacity = 1;
+        document.querySelector("#textnode").style.fontSize = "48px";
+      }
+    });
+
+    window.addEventListener("dragleave", e => {
+      e.preventDefault();
+      if (e.target === document || e.target === lastTarget) {
+        document.querySelector("#dropzone").style.visibility = "hidden";
+        document.querySelector("#dropzone").style.opacity = 0;
+        document.querySelector("#textnode").style.fontSize = "42px";
+      }
+    });
+
+    window.addEventListener("dragover", e => {
+      e.preventDefault();
+    });
+
+    window.addEventListener("drop", e => {
+      e.preventDefault();
+      document.querySelector("#dropzone").style.visibility = "hidden";
+      document.querySelector("#dropzone").style.opacity = 0;
+      document.querySelector("#textnode").style.fontSize = "42px";
+      this.addFiles(e.dataTransfer.files);
+    });
+  },
   methods: {
-    filesChanged: function(e) {
-      let files = e.target.files;
-      this.$store.commit('addFiles', files);
+    isFile: evt => {
+      var dt = evt.dataTransfer;
+
+      for (var i = 0; i < dt.types.length; i++) {
+        if (dt.types[i] === "Files") {
+          return true;
+        }
+      }
+      return false;
+    },
+    addFiles: function(files) {
+      this.$store.commit("addFiles", files);
     }
   },
-  computed: mapState(['images'])
+  computed: mapState(["images"])
 };
 </script>
 
 
 <style>
-.box {
-  height: 200px;
-  background-color: #c8dadf;
-  outline: 2px dashed #92b0b3;
-  outline-offset: -5px;
-  position: relative;
-}
-label {
-  position: absolute;
-  top: 30%;
-  left: 5%;
+div#text {
+  margin-top: 48px;
   text-align: center;
 }
-.file-input {
-  position: absolute;
+div#dropzone {
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 9;
-  height: 100%;
+  z-index: 9999999999;
   width: 100%;
-  opacity: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: visibility 175ms, opacity 175ms;
+  display: table;
+  text-shadow: 1px 1px 2px #000;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  font: bold 42px Oswald, DejaVu Sans, Tahoma, sans-serif;
+}
+div#textnode {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  transition: font-size 175ms;
 }
 </style>

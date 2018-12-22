@@ -1,26 +1,24 @@
 <template>
   <div id="editor">
-    <div id='canvas-wrapper'>
+    <div id="canvas-wrapper">
     <canvas id="canvas">
     </canvas>
-    </div>
-    <canvas id="tmp-canvas"></canvas>
-    <div v-if="selected" id="clips">
+    <div v-if="selected && selected.enabled" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
-        <img :src="obj.dataURL"/>
-        <input :value="obj.text" @input="updateText(obj, $event.target.value)"/>
+        <img :src="obj.dataURL" @click="selectObject(obj)"/>
+        <input :value="obj.text" @input="updateText(obj, $event.target.value)" v-focus/>
       </div>
     </div>
+    </div>
+    <canvas id="tmp-canvas"></canvas>
     <img id="hidden"/>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import Crop from "./Crop.vue";
-
-// import {fabric} from "fabric";
 
 import { fabric } from "fabric-browseronly";
 
@@ -44,57 +42,19 @@ function guidGenerator() {
   );
 }
 
-<<<<<<< HEAD
-// // Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
-// fabric.Object.prototype.toObject = (function(toObject) {
-//   return function(properties) {
-//     return fabric.util.object.extend(toObject.call(this, properties), {
-//       text: this.text,
-//       dataURL: this.dataURL,
-//       uid: guidGenerator()
-//     });
-//   };
-// })(fabric.Object.prototype.toObject);
-
-fabric.Annotator = fabric.util.createClass(fabric.Rect, {
-
-  type: 'annotator',
-
-  initialize: function(element, options) {
-    this.callSuper('initialize', element, options);
-    this.set('uid', guidGenerator());
-    options && this.set('text', options.text);
-    options && this.set('dataURL', options.dataURL);
-  },
-
-  toObject: function() {
-    // debugger;
-    return fabric.util.object.extend(this.callSuper('toObject'), { text: this.text, dataURL: this.dataURL, uid: this.uid });
-  }
-});
-
-fabric.Annotator.fromObject = function(object, callback) {
-  fabric.util.loadImage(object.src, function(img) {
-    debugger;
-    callback && callback(new fabric.NamedImage(img, object));
-  });
-};
-
-// fabric.Annotator.fromObject = function(object, callback) {
-//   fabric.util.loadImage(object.src, function(img) {
-//     callback && callback(new fabric.NamedImage(img, object));
-//   });
-// };
-=======
-// Save additional attributes in Serialization - https://stackoverflow.com/a/40940437/328406
 fabric.Annotator = fabric.util.createClass(fabric.Rect, {
   type: "annotator",
 
   initialize: function(element, options) {
+    options || (options = {});
     this.callSuper("initialize", element, options);
-    this.set("uid", guidGenerator());
-    options && this.set("text", options.text);
-    options && this.set("dataURL", options.dataURL);
+    this.set("uid", options.uid || element.uid || guidGenerator());
+    this.set("text", options.text || element.text || "");
+    this.set("dataURL", element.dataURL || options.dataURL || "");
+  },
+
+  _render: function(ctx) {
+    this.callSuper("_render", ctx);
   },
 
   toObject: function() {
@@ -105,7 +65,14 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
     });
   }
 });
->>>>>>> ok
+
+
+fabric.Annotator.fromObject = function(object, callback) {
+  var rect = new fabric.Annotator(object);
+  callback && callback(rect); //?//
+  return rect;
+};
+fabric.Annotator.async = true;
 
 window.fabric = fabric;
 
@@ -130,7 +97,9 @@ export default {
   },
   mounted() {
     let canvas = new fabric.Canvas("canvas");
+
     window.c = canvas;
+
     canvas.includeDefaultValues = false;
     window.onfocus = () => {
       canvas.renderAll();
@@ -140,11 +109,22 @@ export default {
     wrapper.tabIndex = 1000;
     wrapper.addEventListener("keydown", this.keyDown, false);
     this.canvas = canvas;
+    document.addEventListener("keydown", this.navigation);
   },
   methods: {
+    selectObject(obj) {
+      let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
+      if (canvasObj) {
+        this.canvas.setActiveObject(canvasObj);
+        this.canvas.renderAll();
+      }
+    },
     updateText(obj, value) {
       let canvasObj = this.canvas.getObjects().find(o => o.uid == obj.uid);
-      canvasObj.set("text", value);
+      if (canvasObj) {
+        canvasObj.set("text", value);
+      }
+      this.$store.commit("updateText", [obj.uid, value]);
     },
     dataURL(left, top, width, height) {
       let tmpCanvas = new fabric.Canvas("tmp-canvas");
@@ -171,30 +151,77 @@ export default {
       return url;
     },
     update() {
-      console.log(this.canvas.toJSON());
-      this.selected.data = this.canvas.toJSON();
+
+      let obj = this.canvas.getActiveObject();
+      if (obj) {
+        obj.dataURL = this.dataURL(
+          obj.left,
+          obj.top,
+          obj.getWidth(),
+          obj.getHeight()
+        );
+      }
+      // this.selected.data = this.canvas.toJSON();
+      this.$store.commit("updateData", this.canvas.toJSON());
+    },
+    navigation(e) {
+      if (e.target.tagName != "INPUT") {
+        if (e.key == "d" || e.key == "D") {
+          this.$store.commit("next");
+        }
+        if (e.key == "a" || e.key == "A") {
+          this.$store.commit("previous");
+        }
+      }
+
     },
     keyDown(e) {
-      // debugger;
+      if (e.target.tagName == "INPUT") {
+        return;
+      }
+
+      const STEP = 2;
+      let canvas = this.canvas;
+      let code = e.code;
+      let obj = canvas.getActiveObject();
+      if (obj) {
+        e.preventDefault();
+        if (code == "Delete" || code == "Escape") {
+          canvas.remove(obj);
+          this.update();
+        } else if (code == "ArrowLeft") {
+          obj.setLeft(obj.getLeft() - STEP);
+        } else if (code == "ArrowRight") {
+          obj.setLeft(obj.getLeft() + STEP);
+        } else if (code == "ArrowUp") {
+          obj.setTop(obj.getTop() - STEP);
+        } else if (code == "ArrowDown") {
+          obj.setTop(obj.getTop() + STEP);
+        }
+        this.canvas.renderAll();
+      }
     },
     setDimensions() {
       let canvas = this.canvas;
       let hiddenImg = this.hiddenImg;
       let editor = document.getElementById("editor");
-      let widthRatio = editor.clientWidth / hiddenImg.width,
-        heightRatio = editor.clientHeight / hiddenImg.height;
-      let ratio;
-      if (widthRatio < heightRatio) {
-        ratio = widthRatio;
-      } else {
-        ratio = heightRatio;
-      }
-      if (ratio > 10) {
-        ratio = 10;
-      }
-      ratio = ratio * 0.7;
-      (this.newWidth = hiddenImg.width * ratio),
-        (this.newHeight = hiddenImg.height * ratio);
+      // let widthRatio = editor.clientWidth / hiddenImg.width,
+      //   heightRatio = editor.clientHeight / hiddenImg.height;
+      // let ratio;
+      // if (widthRatio < heightRatio) {
+      //   ratio = widthRatio;
+      // } else {
+      //   ratio = heightRatio;
+      //   ratio = ratio * 0.7;
+      // }
+      // if (ratio > 10) {
+      //   ratio = 10;
+      // }
+
+      // (this.newWidth = hiddenImg.width * ratio),
+      //   (this.newHeight = hiddenImg.height * ratio);
+      this.newWidth = 1200;
+      this.newHeight = hiddenImg.height * this.newWidth / hiddenImg.width;
       canvas.setWidth(this.newWidth);
       canvas.setHeight(this.newHeight);
     },
@@ -223,6 +250,27 @@ export default {
         this.listenEvents();
       });
     },
+    setObjectsSelectable(bool) {
+      this.canvas.getObjects().forEach(o => {
+        o.selectable = bool;
+      });
+    },
+    random_rgba() {
+      var o = Math.round,
+        r = Math.random,
+        s = 255;
+      return (
+        "rgba(" +
+        o(r() * s) +
+        "," +
+        o(r() * s) +
+        "," +
+        o(r() * s) +
+        "," +
+        "0.35" +
+        ")"
+      );
+    },
     listenEvents() {
       let start;
       let canvas = this.canvas;
@@ -232,10 +280,19 @@ export default {
         canvas.__eventListeners["mouse:up"] = [];
       }
       canvas.on("mouse:down", options => {
+        // if the current cursor isn't over an object, disable selection
+        if (
+          !this.canvas._searchPossibleTargets(
+            this.canvas.getObjects(),
+            canvas.getPointer(options.e)
+          )
+        ) {
+          this.setObjectsSelectable(false);
+        }
         start = canvas.getPointer(options.e);
       });
       canvas.on("mouse:up", options => {
-        if (!canvas.getActiveObject() && !canvas.getActiveGroup()) {
+        if (start && !canvas.getActiveObject() && !canvas.getActiveGroup()) {
           let end = canvas.getPointer(options.e);
           let left, top;
 
@@ -254,28 +311,31 @@ export default {
           let height = Math.abs(end.y - start.y);
 
           if (width > 3 && height > 3) {
-<<<<<<< HEAD
             let dataURL = this.dataURL(left, top, width, height);
-=======
-            let dataURL;
-            dataURL = this.dataURL(left, top, width, height);
->>>>>>> ok
+            let text = "";
+            if (this.getPresets && this.getPresets.length > this.cnt) {
+              text = this.getPresets[this.cnt];
+            }
 
             var rect = new fabric.Annotator({
               left: left,
               top: top,
               width: width,
               height: height,
-              fill: "rgba(255,127,39,0.35)",
-              dataURL: dataURL,
-              text: 'abc',
-            });
 
+              // fill: "rgba(255,127,39,0.35)",
+              fill: this.random_rgba(),
+              hasControls: true,
+              dataURL: dataURL,
+              text: text
+            });
             rect.on("modified", this.update);
             canvas.add(rect);
+            this.cnt++;
             canvas.renderAll();
             this.update();
           }
+          this.setObjectsSelectable(true);
         }
       });
     }
@@ -284,7 +344,20 @@ export default {
     selected() {
       let canvas = this.canvas;
       canvas.clear();
+      this.cnt = 0;
       let file = this.selected.file;
+      let canvasData = this.$store.getters.getImage(this.selected.id).data;
+      if (canvasData.objects) {
+        canvas.loadFromJSON(
+          canvasData,
+          canvas.renderAll.bind(canvas),
+          (o, object) => {
+            object.on("modified", this.update);
+            this.cnt++;
+          }
+        );
+      }
+      // else {
       let reader = new FileReader();
       reader.onload = f => {
         var data = f.target.result;
@@ -293,29 +366,38 @@ export default {
         };
         this.hiddenImg.src = data;
       };
-      reader.readAsDataURL(file);
+      if (file instanceof Blob) {
+        reader.readAsDataURL(file);
+      }
+      // }
     }
   },
 
   computed: {
-    ...mapState(["selected"])
+    ...mapState(["selected"]),
+    ...mapGetters(["getPresets"])
   }
 };
 </script>
 
 
 <style>
-#canvas {
-  border: 1px solid red;
-}
-#tmp-canvas {
-  visibility: hidden;
-}
 #hidden {
   position: absolute;
   top: 0;
   left: 0;
   opacity: 0;
   z-index: -1;
+}
+#tmp-canvas {
+  visibility: hidden;
+}
+#canvas-wrapper {
+  outline: none;
+}
+
+#clips div {
+  float: left;
+  padding: 0.5em;
 }
 </style>

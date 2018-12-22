@@ -10,7 +10,8 @@
   "dependencies": {
     "fabric-browseronly": "^1.7.19",
     "vue": "^2.5.17",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persist": "^2.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.1",
