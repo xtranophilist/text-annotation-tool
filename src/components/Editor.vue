@@ -66,7 +66,6 @@ fabric.Annotator = fabric.util.createClass(fabric.Rect, {
   }
 });
 
-
 fabric.Annotator.fromObject = function(object, callback) {
   var rect = new fabric.Annotator(object);
   callback && callback(rect); //?//
@@ -151,7 +150,6 @@ export default {
       return url;
     },
     update() {
-
       let obj = this.canvas.getActiveObject();
       if (obj) {
         obj.dataURL = this.dataURL(
@@ -173,7 +171,6 @@ export default {
           this.$store.commit("previous");
         }
       }
-
     },
     keyDown(e) {
       if (e.target.tagName == "INPUT") {
@@ -322,7 +319,6 @@ export default {
               top: top,
               width: width,
               height: height,
-
               // fill: "rgba(255,127,39,0.35)",
               fill: this.random_rgba(),
               hasControls: true,
@@ -333,6 +329,7 @@ export default {
             canvas.add(rect);
             this.cnt++;
             canvas.renderAll();
+            // this.addImage()
             this.update();
           }
           this.setObjectsSelectable(true);
