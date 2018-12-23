@@ -18,8 +18,6 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 
-import Crop from "./Crop.vue";
-
 import { fabric } from "fabric-browseronly";
 
 function guidGenerator() {
@@ -85,7 +83,6 @@ fabric.Group.prototype.lockRotation = true;
 
 export default {
   name: "Editor",
-  components: { Crop },
   data() {
     return {
       hiddenImg: null,
@@ -201,7 +198,7 @@ export default {
     setDimensions() {
       let canvas = this.canvas;
       let hiddenImg = this.hiddenImg;
-      let editor = document.getElementById("editor");
+      // let editor = document.getElementById("editor");
       // let widthRatio = editor.clientWidth / hiddenImg.width,
       //   heightRatio = editor.clientHeight / hiddenImg.height;
       // let ratio;
@@ -234,7 +231,6 @@ export default {
     },
     addImage(data) {
       let canvas = this.canvas;
-      let hiddenImg = this.hiddenImg;
       this.setDimensions();
       fabric.Image.fromURL(data, img => {
         img = img.set({
