@@ -157,7 +157,9 @@ export default {
         );
       }
       // this.selected.data = this.canvas.toJSON();
+      console.log('updated');
       this.$store.commit("updateData", this.canvas.toJSON());
+      this.$store.commit("syncSelected");
     },
     navigation(e) {
       if (e.target.tagName != "INPUT") {
@@ -185,12 +187,16 @@ export default {
           this.update();
         } else if (code == "ArrowLeft") {
           obj.setLeft(obj.getLeft() - STEP);
+          this.update();
         } else if (code == "ArrowRight") {
           obj.setLeft(obj.getLeft() + STEP);
+          this.update();
         } else if (code == "ArrowUp") {
           obj.setTop(obj.getTop() - STEP);
+          this.update();
         } else if (code == "ArrowDown") {
           obj.setTop(obj.getTop() + STEP);
+          this.update();
         }
         this.canvas.renderAll();
       }
@@ -221,7 +227,7 @@ export default {
       if (this.newHeight > heightLimit) {
         let ratio = this.newHeight / heightLimit;
         this.newWidth = this.newWidth / ratio;
-        this.newHeight = heightLimit+0;
+        this.newHeight = heightLimit + 0;
       }
 
       canvas.setWidth(this.newWidth);
