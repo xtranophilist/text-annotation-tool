@@ -10,7 +10,7 @@
     </select>
     </div>
     <a href="#" @click.prevent="clearFiles">Clear</a>
-    <a href="#" @click.prevent="download">Export</a>
+    <a href="javascript:void()" @click.prevent="downloadData">Export</a>
     <div>
     <input id="localImport" type="file" @change="importLocal" class="hidden" />
     <input type="button" value="Import" onclick="document.getElementById('localImport').click();" />
@@ -29,6 +29,7 @@
 import Dropzone from "./Dropzone.vue";
 import ImageRow from "./ImageRow.vue";
 import { mapState, mapGetters } from "vuex";
+import download from 'downloadjs'
 
 export default {
   name: "Sidebar",
@@ -43,7 +44,7 @@ export default {
     };
   },
   created() {
-    // this.$store.watch(state => state, this.handleStateUpdate, {deep: true});
+    this.$store.watch(state => state, this.handleStateUpdate, {deep: true});
     this.handleStateUpdate();
   },
   methods: {
@@ -62,14 +63,10 @@ export default {
     updatePreset(val) {
       this.$store.commit("updatePreset", val);
     },
-    download() {
-      let a = document.createElement("a");
-      let stateData = JSON.stringify(this.$store.state);
-      a.href = "data:text/plain," + stateData;
-      a.download = new Date().toISOString() + ".txt";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+    downloadData() {
+      let stateData = JSON.stringify(this.$store.state.images);
+      let filename=new Date().toISOString() + ".txt"
+      download(stateData, filename, 'text/plain')
     },
     handleStateUpdate() {
       navigator.storage.estimate().then(data => {

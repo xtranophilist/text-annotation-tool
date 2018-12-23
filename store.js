@@ -91,15 +91,17 @@ const store = new Vuex.Store({
       }
     },
     updateState(state, data) {
-      state.images = data.images
-      state.selected = data.selected
-      state.preset = data.preset
+      state.images = data
     },
     updateText(state, arr) {
       state.selected.data.objects.find(o => o.uid == arr[0]).text = arr[1]
     },
     updateData(state, data) {
       state.selected.data = data
+    },
+    syncSelected(state) {
+      let selected = state.images.find(i => i.id == state.selected.id)
+      selected.date = state.selected.data
     },
     updatePreset(state, preset) {
       state.preset = preset
