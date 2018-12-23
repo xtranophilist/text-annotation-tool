@@ -5,6 +5,13 @@ import VuexPersist from 'vuex-persist'
 // import { getBase64 } from './utils'
 import localforage from 'localforage'
 
+if (navigator.storage && navigator.storage.persist)
+  navigator.storage.persist().then(granted => {
+    if (granted)
+      alert("Storage will not be cleared except by explicit user action");
+    else
+      alert("Storage may be cleared by the UA under storage pressure.");
+  });
 
 Vue.use(Vuex);
 
