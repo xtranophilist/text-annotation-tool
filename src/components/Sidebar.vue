@@ -15,7 +15,7 @@
     <input id="localImport" type="file" @change="importLocal" class="hidden" />
     <input type="button" value="Import" onclick="document.getElementById('localImport').click();" />
     </div>
-    <div>{{size}} KB</div>
+    <div>{{usage}}/{{quota}} GB</div>
     </div>
     <hr/>
     <div v-for="image in enabledImages" :key="image.id">
@@ -38,7 +38,8 @@ export default {
   },
   data() {
     return {
-      size: 0
+      quota: 0,
+      usage: 0
     };
   },
   created() {
@@ -74,13 +75,10 @@ export default {
       document.body.removeChild(a);
     },
     handleStateUpdate() {
-      let allStrings = "";
-      for (let key in window.localStorage) {
-        if (window.localStorage.hasOwnProperty(key)) {
-          allStrings += window.localStorage[key];
-        }
-      }
-      this.size = allStrings ? 3 + allStrings.length * 16 / (8 * 1024) : 0;
+      navigator.storage.estimate().then(data => {
+        this.usage = (data.usage/(1024*1024*1024)).toFixed(2);
+        this.quota = (data.quota/(1024*1024*1024)).toFixed(2);
+      });
     }
   },
   computed: {

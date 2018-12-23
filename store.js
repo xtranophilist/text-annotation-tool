@@ -8,9 +8,11 @@ import localforage from 'localforage'
 if (navigator.storage && navigator.storage.persist)
   navigator.storage.persist().then(granted => {
     if (granted)
-      alert("Storage will not be cleared except by explicit user action");
+      // eslint-disable-next-line
+      console.log("Storage will not be cleared except by explicit user action");
     else
-      alert("Storage may be cleared by the UA under storage pressure.");
+      // eslint-disable-next-line
+      console.log("Storage may be cleared by the UA under storage pressure.");
   });
 
 Vue.use(Vuex);
@@ -31,7 +33,6 @@ const store = new Vuex.Store({
       'IKAD': ['NAME', 'PASSPORT', 'NO', 'DATE', 'OF', 'BIRTH', 'SECTOR', 'EMPLOYER', 'ADDRESS', 'EXPIRY', 'DATE', 'GENDER'],
     },
     preset: null,
-
   },
   getters: {
     imagePaths: state => {
@@ -83,8 +84,8 @@ const store = new Vuex.Store({
           state.selected = images[0]
         }
       }
-      if (state.selected){
-        let img  = state.images.find(i=>i.id==state.selected.id)
+      if (state.selected) {
+        let img = state.images.find(i => i.id == state.selected.id)
         state.selected = null
         state.selected = img
       }
