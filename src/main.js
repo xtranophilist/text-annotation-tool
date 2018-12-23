@@ -5,6 +5,10 @@ Vue.config.productionTip = false
 
 import store from '../store'
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+
 Vue.directive('focus', {
   // When the bound element is inserted into the DOM...
   inserted: function (el) {
