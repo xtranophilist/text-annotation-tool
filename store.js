@@ -105,6 +105,7 @@ const store = new Vuex.Store({
     clearFiles(state) {
       state.images.forEach(i => i.enabled = false)
       state.selected.enabled = false
+      state.selected = null
     },
     next(state) {
       let index = state.images.findIndex(o => o.id == state.selected.id)

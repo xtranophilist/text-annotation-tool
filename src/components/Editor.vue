@@ -335,6 +335,7 @@ export default {
   },
   watch: {
     selected() {
+      if (!this.selected) return;
       let canvas = this.canvas;
       canvas.clear();
       this.cnt = 0;
