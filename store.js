@@ -90,6 +90,11 @@ const store = new Vuex.Store({
         state.selected = img
       }
     },
+    updateState(state, data) {
+      state.images = data.images
+      state.selected = data.selected
+      state.preset = data.preset
+    },
     updateText(state, arr) {
       state.selected.data.objects.find(o => o.uid == arr[0]).text = arr[1]
     },

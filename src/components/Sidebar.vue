@@ -51,12 +51,9 @@ export default {
       let file = e.target.files[0];
       let read = new FileReader();
       read.readAsBinaryString(file);
-      read.onloadend = function() {
-        var data = JSON.parse(JSON.parse(read.result));
-        Object.keys(data).forEach(function(k) {
-          localStorage.setItem(k, data[k]);
-        });
-        window.location.reload();
+      read.onloadend = () => {
+        let data = JSON.parse(read.result);
+        this.$store.commit("updateState", data);
       };
     },
     clearFiles() {
@@ -67,8 +64,8 @@ export default {
     },
     download() {
       let a = document.createElement("a");
-      let localStorageData = JSON.stringify(JSON.stringify(localStorage));
-      a.href = "data:text/plain," + localStorageData;
+      let stateData = JSON.stringify(this.$store.state);
+      a.href = "data:text/plain," + stateData;
       a.download = new Date().toISOString() + ".txt";
       document.body.appendChild(a);
       a.click();
@@ -76,8 +73,8 @@ export default {
     },
     handleStateUpdate() {
       navigator.storage.estimate().then(data => {
-        this.usage = (data.usage/(1024*1024*1024)).toFixed(2);
-        this.quota = (data.quota/(1024*1024*1024)).toFixed(2);
+        this.usage = (data.usage / (1024 * 1024 * 1024)).toFixed(2);
+        this.quota = (data.quota / (1024 * 1024 * 1024)).toFixed(2);
       });
     }
   },

@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState(["selected"]),
     isSelected() {
-      return this.selected.id === this.img.id;
+      return this.selected && this.selected.id === this.img.id;
     },
     hasFile(){
       return this.img.file instanceof Blob;
