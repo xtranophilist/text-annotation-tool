@@ -216,6 +216,14 @@ export default {
       //   (this.newHeight = hiddenImg.height * ratio);
       this.newWidth = 1200;
       this.newHeight = hiddenImg.height * this.newWidth / hiddenImg.width;
+
+      let heightLimit = 800;
+      if (this.newHeight > heightLimit) {
+        let ratio = this.newHeight / heightLimit;
+        this.newWidth = this.newWidth / ratio;
+        this.newHeight = heightLimit+0;
+      }
+
       canvas.setWidth(this.newWidth);
       canvas.setHeight(this.newHeight);
     },
