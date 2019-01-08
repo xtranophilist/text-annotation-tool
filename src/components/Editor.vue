@@ -6,7 +6,7 @@
     <div v-if="selected && selected.enabled" id="clips">
       <div v-for="obj in selected.data.objects" :key="obj.guid">
         <img :src="obj.dataURL" @click="selectObject(obj)"/>
-        <input :value="obj.text" @input="updateText(obj, $event.target.value)" v-focus/>
+        <input :value="obj.text" @input="updateText(obj, $event.target.value)"/>
       </div>
     </div>
     </div>
